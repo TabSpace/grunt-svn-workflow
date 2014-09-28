@@ -11,18 +11,23 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		confirm : {
-			distribute : {
-				msg : 'publish ?'
+		jshint: {
+			all: [
+				'Gruntfile.js',
+				'tasks/**/*.js'
+			//	'<%= nodeunit.tests %>'
+			],
+			options: {
+				jshintrc: '.jshintrc'
 			}
 		},
 		svnConfig : {
 			// Project svn repository path.
 			repository : 'auto',
-			// Gruntfile.js path relative to Project svn repository path.
+			// Gruntfile.js path relative to project svn repository path.
 			relativePath : 'tools',
 			// Project local path.
-			projectDir : $path.resolve(__dirname, 'test')
+			projectDir : $path.resolve(__dirname, 'tmp')
 		},
 		svnInit : {
 			map : {
@@ -54,7 +59,7 @@ module.exports = function(grunt) {
 	// Whenever the "test" task is run, first clean the "tmp" dir, then run this
 	// plugin's task(s), then test the result.
 	grunt.registerTask('test', [
-
+		'jshint'
 	]);
 
 	// By default, lint and run all tests.
