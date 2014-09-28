@@ -1,16 +1,35 @@
 {
   "name": "grunt-svn-workflow",
   "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Manage svn folders.",
+  "author": "Tony Liang",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Esoul/grunt-svn-workflow.git"
+  },
+  "dependencies": {
+    "svn-spawn": "0.1.1"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.2",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "^0.4.0"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.0"
   },
   "keywords": [
     "grunt",
     "svn",
     "workflow"
   ],
-  "author": "Tony Liang",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "files": [
+    "tasks",
+    "LICENSE-MIT"
+  ],
   "license": "ISC"
 }
