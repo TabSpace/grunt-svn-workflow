@@ -5,6 +5,7 @@
   "author": "Tony Liang",
   "license": "MIT",
   "devDependencies": {
-    "grunt": "^0.4.2"
+    "grunt": "^0.4.2",
+    "grunt-svn-workflow": ">=0.0.0"
   }
 }
