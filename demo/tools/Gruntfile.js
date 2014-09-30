@@ -15,7 +15,9 @@ module.exports = function(grunt) {
 			// Project svn repository path.
 			repository : 'auto',
 			// Project deploy path.
-			projectDir : $path.resolve(__dirname, '../')
+			projectDir : $path.resolve(__dirname, '../'),
+			// Project gruntfile directory.
+			taskDir : 'tools'
 		},
 		svnInit : {
 			map : {

@@ -20,6 +20,31 @@ module.exports = function(grunt) {
 			options: {
 				jshintrc: '.jshintrc'
 			}
+		},
+		svnConfig : {
+			// Project svn repository path.
+			repository : 'auto',
+			// Project deploy path.
+			projectDir : $path.resolve(__dirname, 'demo'),
+			// Project gruntfile directory.
+			taskDir : 'tools'
+		},
+		svnInit : {
+			map : {
+				'dev' : {
+					'branches' : 'folder',
+					'tags' : 'folder',
+					'trunk' : {
+						'html' : 'folder',
+						'css' : 'folder',
+						'js' : 'folder'
+					}
+				},
+				'online' : {
+					'tags' : 'folder',
+					'trunk' : 'folder'
+				}
+			}
 		}
 	});
 

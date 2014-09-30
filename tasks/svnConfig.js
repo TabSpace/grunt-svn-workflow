@@ -10,7 +10,7 @@ module.exports = function(grunt){
 
 			var conf = grunt.config.get('svnConfig');
 
-			var taskDir = $path.resolve(conf.projectDir, conf.relativePath);
+			var taskDir = $path.resolve(conf.projectDir, conf.taskDir);
 			grunt.log.writeln('Project task directory is ', taskDir);
 
 			if(!conf.repository || conf.repository === 'auto'){
