@@ -10,6 +10,14 @@ module.exports = function(grunt){
 
 			var conf = grunt.config.get('svnConfig');
 
+			if(!conf.projectDir){
+				grunt.fatal('Task svnConfig need option: projectDir.');
+			}
+			
+			if(!conf.taskDir){
+				grunt.fatal('Task svnConfig need option: taskDir.');
+			}
+
 			var taskDir = $path.resolve(conf.projectDir, conf.taskDir);
 			grunt.log.writeln('Project task directory is ', taskDir);
 
@@ -25,7 +33,7 @@ module.exports = function(grunt){
 						grunt.fatal('Get svn info failure');
 					}else{
 						if(data.url){
-							svnBasePath = data.url.replace(conf.filter, '');
+							svnBasePath = data.url.replace(conf.taskDir, '');
 							grunt.config.set('svnConfig.repository', svnBasePath);
 							grunt.log.ok('Project repository url is %s', svnBasePath);
 							done();

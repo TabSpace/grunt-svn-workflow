@@ -30,6 +30,10 @@ module.exports = function(grunt) {
 			taskDir : 'tools'
 		},
 		svnInit : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
 			map : {
 				'dev' : {
 					'branches' : 'folder',
@@ -44,6 +48,51 @@ module.exports = function(grunt) {
 					'tags' : 'folder',
 					'trunk' : 'folder'
 				}
+			}
+		},
+		svnCheckout : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			deploy : {
+				map : {
+					'trunk/' : '/dev/trunk/',
+					'dist/' : '/online/trunk/',
+					'pack/' : '/dev/pack/'
+				}
+			},
+			packPrepare : {
+				map : {
+					'tools/temp/online/':'/online/trunk/',
+					'tools/temp/trunk/' : '/dev/trunk/',
+					'tools/temp/pack/' : '/dev/pack/'
+				}
+			}
+		},
+		svnCommit : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			online : {
+				logResource : '/dev/trunk/',
+				svn : '/online/trunk/',
+				src : 'tools/temp/online/'
+			}
+		},
+		svnTag : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			common : {
+				dev : 'tools/temp/trunk/',
+				devSvn : '/dev/trunk/',
+				devTag : '/dev/tags/',
+				online : 'tools/temp/online/',
+				onlineSvn : '/online/trunk/',
+				onlineTag : '/online/tags/'
 			}
 		}
 	});
@@ -60,6 +109,11 @@ module.exports = function(grunt) {
 	// plugin's task(s), then test the result.
 	grunt.registerTask('test', [
 		'jshint'
+	]);
+
+	// Whenever the "deploy" task is run, checkout the workingcopy.
+	grunt.registerTask('deploy', [
+
 	]);
 
 	// By default, lint and run all tests.

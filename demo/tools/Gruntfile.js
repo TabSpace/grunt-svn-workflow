@@ -38,6 +38,8 @@ module.exports = function(grunt) {
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-svn-workflow');
+
 	// Whenever the "deploy" task is run, checkout the workingcopy.
 	grunt.registerTask('deploy', [
 
