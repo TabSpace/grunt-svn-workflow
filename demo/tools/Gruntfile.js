@@ -11,6 +11,11 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
+		confirm : {
+			distribute : {
+				msg : 'publish ?'
+			}
+		},
 		svnConfig : {
 			// Project svn repository path.
 			repository : 'auto',
@@ -20,6 +25,11 @@ module.exports = function(grunt) {
 			taskDir : 'tools'
 		},
 		svnInit : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			// Build pathes according to the map.
 			map : {
 				'dev' : {
 					'branches' : 'folder',
@@ -35,15 +45,74 @@ module.exports = function(grunt) {
 					'trunk' : 'folder'
 				}
 			}
+		},
+		svnCheckout : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			deploy : {
+				map : {
+					'trunk' : 'dev/trunk',
+					'dist' : 'online/trunk'
+				}
+			},
+			prepare : {
+				map : {
+					'tools/temp/online':'online/trunk',
+					'tools/temp/trunk' : 'dev/trunk'
+				}
+			}
+		},
+		svnCommit : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			online : {
+				logResource : 'dev/trunk',
+				svn : 'online/trunk',
+				src : 'tools/temp/online'
+			}
+		},
+		svnTag : {
+			options : {
+				repository: '<%=svnConfig.repository%>',
+				cwd: '<%=svnConfig.projectDir%>'
+			},
+			common : {
+				dev : 'tools/temp/trunk',
+				devSvn : 'dev/trunk',
+				devTag : 'dev/tags',
+				online : 'tools/temp/online',
+				onlineSvn : 'online/trunk',
+				onlineTag : 'online/tags'
+			}
 		}
 	});
 
 	grunt.loadNpmTasks('grunt-svn-workflow');
 
-	// Whenever the "deploy" task is run, checkout the workingcopy.
-	grunt.registerTask('deploy', [
+	grunt.registerTask(
+		'deploy',
+		'Checkout the workingcopy according to the folder map.',
+		[
+			'svnConfig',
+			'svnCheckout:deploy'
+		]
+	);
 
-	]);
+	grunt.registerTask(
+		'publish',
+		'Pack and compress files, then distribute.',
+		[
+			'svnConfig',
+			'svnCheckout:prepare',
+			'confirm:distribute',
+			'svnCommit:online',
+			'svnTag'
+		]
+	);
 
 	// By default, deploy the workingcopy.
 	grunt.registerTask('default', [
