@@ -1,8 +1,17 @@
 var $fs = require('fs');
 var $path = require('path');
 var $Client = require('svn-spawn');
+var $Spawn = require('easy-spawn');
 
 module.exports = function(grunt){
+
+	var joinUrl = function(){
+		var args = Array.prototype.slice.call(arguments);
+		return args.shift().replace(/\/$/, '') + '/' + args.map(function(s){
+			return ('' + s).trim().replace(/^\/+|\/+$/gi, '');
+		}).join('/');
+	};
+
 	grunt.registerMultiTask(
 		'svnTag',
 		'generate svn tags',
@@ -12,11 +21,11 @@ module.exports = function(grunt){
 			var data = this.data;
 
 			var devPath = $path.join(conf.cwd, data.dev);
-			var devSvnPath = conf.repository + data.devSvn;
-			var devTagPath = conf.repository + data.devTag;
+			var devSvnPath = joinUrl(conf.repository, data.devSvn);
+			var devTagPath = joinUrl(conf.repository, data.devTag);
 			var onlinePath = $path.join(conf.cwd, data.online);
-			var onlineSvnPath = conf.repository + data.onlineSvn;
-			var onlineTagPath = conf.repository + data.onlineTag;
+			var onlineSvnPath = joinUrl(conf.repository, data.onlineSvn);
+			var onlineTagPath = joinUrl(conf.repository, data.onlineTag);
 
 			grunt.log.writeln('devPath:',devPath);
 			grunt.log.writeln('devSvnPath:',devSvnPath);
@@ -79,28 +88,28 @@ module.exports = function(grunt){
 						cwd: devPath
 					});
 
-					spawnCheck.cmd(['svn', 'list', onlineTagPath + v], function(err, data) {
+					spawnCheck.cmd(['svn', 'list', joinUrl(onlineTagPath, v)], function(err, data) {
 						if(err){
 							if((/non-existent/gi).test(err)){
 								grunt.log.ok('%s : tag not exists. start tag building ...', v);
 								//复制 dev/trunk 到 dev/tags
-								spawnDev.cmd(['svn', 'cp', devSvnPath, devTagPath + v, '-m', log], function(err, data) {
+								spawnDev.cmd(['svn', 'cp', devSvnPath, joinUrl(devTagPath, v), '-m', log], function(err, data) {
 									if(err){
 										grunt.log.errorlns(err);
-										grunt.fatal('build dev tag : ' + devTagPath + v + ' error!');
+										grunt.fatal('build dev tag : ' + joinUrl(devTagPath, v) + ' error!');
 									}else{
-										grunt.log.writeln('build tag %s complete!', devTagPath + v);
+										grunt.log.writeln('build tag %s complete!', joinUrl(devTagPath, v));
 										checkComplete('dev');
 									}
 								});
 
 								//复制 online/trunk 到 online/tags
-								spawnOnline.cmd(['svn', 'cp', onlineSvnPath, onlineTagPath + v, '-m', log], function(err, data) {
+								spawnOnline.cmd(['svn', 'cp', onlineSvnPath, joinUrl(onlineTagPath, v), '-m', log], function(err, data) {
 									if(err){
 										grunt.log.errorlns(err);
-										grunt.fatal('build online tag : ' + onlineTagPath + v + ' error!');
+										grunt.fatal('build online tag : ' + joinUrl(onlineTagPath, v) + ' error!');
 									}else{
-										grunt.log.writeln('build tag %s complete!', onlineTagPath + v);
+										grunt.log.writeln('build tag %s complete!', joinUrl(onlineTagPath, v));
 										checkComplete('online');
 									}
 								});

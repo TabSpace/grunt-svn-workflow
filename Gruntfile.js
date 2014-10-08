@@ -21,6 +21,11 @@ module.exports = function(grunt) {
 				jshintrc: '.jshintrc'
 			}
 		},
+		confirm : {
+			distribute : {
+				msg : 'publish ?'
+			}
+		},
 		svnConfig : {
 			// Project svn repository path.
 			repository : 'auto',
@@ -59,15 +64,13 @@ module.exports = function(grunt) {
 			deploy : {
 				map : {
 					'trunk' : 'dev/trunk',
-					'dist' : 'online/trunk',
-					'pack' : 'dev/pack'
+					'dist' : 'online/trunk'
 				}
 			},
 			prepare : {
 				map : {
 					'tools/temp/online':'online/trunk',
-					'tools/temp/trunk' : 'dev/trunk',
-					'tools/temp/pack' : 'dev/pack'
+					'tools/temp/trunk' : 'dev/trunk'
 				}
 			}
 		},
@@ -106,15 +109,31 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
+	grunt.registerTask(
+		'deploy',
+		'Checkout the workingcopy according to the folder map.',
+		[
+			'svnConfig',
+			'svnCheckout:deploy'
+		]
+	);
+
+	grunt.registerTask(
+		'publish',
+		'Pack and compress files, then distribute.',
+		[
+			'svnConfig',
+			'svnCheckout:prepare',
+			'confirm:distribute',
+			'svnCommit:online',
+			'svnTag'
+		]
+	);
+
 	// Whenever the "test" task is run, first clean the "tmp" dir, then run this
 	// plugin's task(s), then test the result.
 	grunt.registerTask('test', [
 		'jshint'
-	]);
-
-	// Whenever the "deploy" task is run, checkout the workingcopy.
-	grunt.registerTask('deploy', [
-
 	]);
 
 	// By default, lint and run all tests.

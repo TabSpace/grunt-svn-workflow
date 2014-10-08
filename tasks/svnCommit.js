@@ -1,10 +1,18 @@
 var $fs = require('fs');
 var $path = require('path');
 var $Client = require('svn-spawn');
+var $Spawn = require('easy-spawn');
 
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;
+
+	var joinUrl = function(){
+		var args = Array.prototype.slice.call(arguments);
+		return args.shift().replace(/\/$/, '') + '/' + args.map(function(s){
+			return ('' + s).trim().replace(/^\/+|\/+$/gi, '');
+		}).join('/');
+	};
 
 	grunt.registerMultiTask(
 		'svnCommit',
@@ -15,14 +23,14 @@ module.exports = function(grunt){
 			var data = this.data;
 
 			var srcPath = $path.join(conf.cwd, data.src);
-			var svnPath = $path.join(conf.repository, data.svn);
+			var svnPath = joinUrl(conf.repository, data.svn);
 			var logResourcePath = '';
 
 			if(data.logResource){
 				if(!arg){
-					logResourcePath = $path.join(conf.repository, data.logResource);
+					logResourcePath = joinUrl(conf.repository, data.logResource);
 				}else{
-					logResourcePath = $path.join(conf.repository, data.logResource, 'branches', arg);
+					logResourcePath = joinUrl(conf.repository, data.logResource, 'branches', arg);
 				}
 			}
 
