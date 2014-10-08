@@ -34,6 +34,7 @@ module.exports = function(grunt) {
 				repository: '<%=svnConfig.repository%>',
 				cwd: '<%=svnConfig.projectDir%>'
 			},
+			// Build pathes according to the map.
 			map : {
 				'dev' : {
 					'branches' : 'folder',
@@ -57,16 +58,16 @@ module.exports = function(grunt) {
 			},
 			deploy : {
 				map : {
-					'trunk/' : '/dev/trunk/',
-					'dist/' : '/online/trunk/',
-					'pack/' : '/dev/pack/'
+					'trunk' : 'dev/trunk',
+					'dist' : 'online/trunk',
+					'pack' : 'dev/pack'
 				}
 			},
-			packPrepare : {
+			prepare : {
 				map : {
-					'tools/temp/online/':'/online/trunk/',
-					'tools/temp/trunk/' : '/dev/trunk/',
-					'tools/temp/pack/' : '/dev/pack/'
+					'tools/temp/online':'online/trunk',
+					'tools/temp/trunk' : 'dev/trunk',
+					'tools/temp/pack' : 'dev/pack'
 				}
 			}
 		},
@@ -76,9 +77,9 @@ module.exports = function(grunt) {
 				cwd: '<%=svnConfig.projectDir%>'
 			},
 			online : {
-				logResource : '/dev/trunk/',
-				svn : '/online/trunk/',
-				src : 'tools/temp/online/'
+				logResource : 'dev/trunk',
+				svn : 'online/trunk',
+				src : 'tools/temp/online'
 			}
 		},
 		svnTag : {
@@ -87,12 +88,12 @@ module.exports = function(grunt) {
 				cwd: '<%=svnConfig.projectDir%>'
 			},
 			common : {
-				dev : 'tools/temp/trunk/',
-				devSvn : '/dev/trunk/',
-				devTag : '/dev/tags/',
-				online : 'tools/temp/online/',
-				onlineSvn : '/online/trunk/',
-				onlineTag : '/online/tags/'
+				dev : 'tools/temp/trunk',
+				devSvn : 'dev/trunk',
+				devTag : 'dev/tags',
+				online : 'tools/temp/online',
+				onlineSvn : 'online/trunk',
+				onlineTag : 'online/tags'
 			}
 		}
 	});

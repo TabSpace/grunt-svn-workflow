@@ -8,21 +8,21 @@ module.exports = function(grunt){
 
 	grunt.registerMultiTask(
 		'svnCommit',
-		'commit files',
+		'Commit files',
 		function(arg){
 			var done = this.async();
 			var conf = this.options();
 			var data = this.data;
 
 			var srcPath = $path.join(conf.cwd, data.src);
-			var svnPath = conf.repository + data.svn;
+			var svnPath = $path.join(conf.repository, data.svn);
 			var logResourcePath = '';
 
 			if(data.logResource){
 				if(!arg){
-					logResourcePath = conf.repository + data.logResource;
+					logResourcePath = $path.join(conf.repository, data.logResource);
 				}else{
-					logResourcePath = conf.repository + data.logResource + '/branches/' + arg;
+					logResourcePath = $path.join(conf.repository, data.logResource, 'branches', arg);
 				}
 			}
 

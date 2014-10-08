@@ -8,7 +8,7 @@ module.exports = function(grunt){
 
 	grunt.registerMultiTask(
 		'svnCheckout',
-		'checkout files to target directory',
+		'Checkout files to target directory.',
 		function(arg){
 			var done = this.async();
 			var conf = this.options();
@@ -19,6 +19,8 @@ module.exports = function(grunt){
 			Object.keys(map).forEach(function(localPath){
 				var svnPath = map[localPath];
 				var srcPath = $path.join(conf.cwd, localPath);
+
+				// $path.join will replace 'http://path' 'to http:/path'.
 				if(svnPath){
 					svnPath = conf.repository + svnPath;
 				}else{
