@@ -31,7 +31,7 @@
   },
   "files": [
     "tasks",
-    "LICENSE-MIT"
+    "LICENSE"
   ],
-  "license": "ISC"
+  "license": "MIT"
 }
