@@ -2,7 +2,7 @@
  * grunt-svn-workflow
  * http://gruntjs.com/
  *
- * Copyright (c) 2014 Tony Liang
+ * Copyright (c) 2014 "Anis" Tony Liang
  * Licensed under the MIT license.
  */
 var $path = require('path');

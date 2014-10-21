@@ -2,7 +2,7 @@
  * grunt-svn-workflow
  * http://gruntjs.com/
  *
- * Copyright (c) 2014 "Sina" Tony Liang
+ * Copyright (c) 2014 Tony Liang
  * Licensed under the MIT license.
  */
 var $path = require('path');
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 			// Project svn repository path.
 			repository : 'auto',
 			// Project deploy path.
-			projectDir : $path.resolve(__dirname, 'demo'),
+			projectDir : $path.resolve(__dirname, 'test'),
 			// Project gruntfile directory.
 			taskDir : 'tools'
 		},
@@ -104,6 +104,9 @@ module.exports = function(grunt) {
 	// Actually load this plugin's task(s).
 	grunt.loadTasks('tasks');
 
+	// Load test tasks.
+	grunt.loadTasks('test/tasks');
+
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
@@ -126,7 +129,8 @@ module.exports = function(grunt) {
 			'svnCheckout:prepare',
 			'confirm:distribute',
 			'svnCommit:online',
-			'svnTag'
+			'svnTag',
+			'deploy'
 		]
 	);
 
