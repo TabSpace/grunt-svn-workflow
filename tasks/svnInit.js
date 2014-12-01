@@ -2,6 +2,16 @@ var $fs = require('fs');
 var $path = require('path');
 var $Client = require('svn-spawn');
 
+/*
+ * grunt-svn-workflow
+ * http://gruntjs.com/
+ *
+ * Copyright (c) 2014 Tony Liang
+ * Licensed under the MIT license.
+ *
+ * @fileoverview Automatically create the directory structure to ensure the normal workflow.
+ */
+
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;

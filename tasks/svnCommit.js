@@ -3,6 +3,16 @@ var $path = require('path');
 var $Client = require('svn-spawn');
 var $Spawn = require('easy-spawn');
 
+/*
+ * grunt-svn-workflow
+ * http://gruntjs.com/
+ *
+ * Copyright (c) 2014 Tony Liang
+ * Licensed under the MIT license.
+ *
+ * @fileoverview Commit processed files to online trunk.
+ */
+
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;
@@ -43,6 +53,8 @@ module.exports = function(grunt){
 			var info = {};
 			var jobs = [];
 
+			//We can get all logs from previous commit to now if we specify the log source.
+			//To do this , we get the previous commit revision number at first.
 			var getPrevRevision = function(callback){
 				grunt.log.writeln();
 				grunt.log.writeln('get prev revision ...');
@@ -76,6 +88,7 @@ module.exports = function(grunt){
 				});
 			};
 
+			//Get all logs from previous commit to now.
 			var getLogs = function(callback){
 				var prevVersion = info.prevVersion || '';
 				var prevLog = info.prevLog || '';
@@ -124,6 +137,7 @@ module.exports = function(grunt){
 				});
 			};
 
+			//Finally, commit files.
 			var doCommit = function(callback){
 				var client = new $Client({
 					cwd : srcPath

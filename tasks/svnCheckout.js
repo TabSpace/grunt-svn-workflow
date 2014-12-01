@@ -2,6 +2,16 @@ var $fs = require('fs');
 var $path = require('path');
 var $Client = require('svn-spawn');
 
+/*
+ * grunt-svn-workflow
+ * http://gruntjs.com/
+ *
+ * Copyright (c) 2014 Tony Liang
+ * Licensed under the MIT license.
+ *
+ * @fileoverview Check out target files.
+ */
+
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;
@@ -31,8 +41,9 @@ module.exports = function(grunt){
 					var client = new $Client({
 						cwd : srcPath
 					});
-
+					
 					if (!$fs.existsSync(srcPath)){
+						//Check out files if we don't have the workingcopy.
 						grunt.file.mkdir(srcPath);
 						grunt.log.writeln('start checkout : %s to %s', svnPath, srcPath);
 						client.checkout(svnPath, function(err) {
@@ -46,6 +57,7 @@ module.exports = function(grunt){
 							callback();
 						});
 					}else{
+						//Update the workingcopy if we already have checked out.
 						grunt.log.writeln('start update : %s to %s', svnPath, srcPath);
 						client.update(function(err) {
 							if (err){

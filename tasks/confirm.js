@@ -1,5 +1,15 @@
 var $askFor = require('ask-for');
 
+/*
+ * grunt-svn-workflow
+ * http://gruntjs.com/
+ *
+ * Copyright (c) 2014 Tony Liang
+ * Licensed under the MIT license.
+ *
+ * @fileoverview Pause the grunt workflow and confirm the action.
+ */
+
 module.exports = function(grunt){
 	grunt.registerMultiTask(
 		'confirm',

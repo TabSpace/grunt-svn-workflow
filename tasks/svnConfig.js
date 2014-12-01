@@ -1,6 +1,16 @@
 var $path = require('path');
 var $Client = require('svn-spawn');
 
+/*
+ * grunt-svn-workflow
+ * http://gruntjs.com/
+ *
+ * Copyright (c) 2014 Tony Liang
+ * Licensed under the MIT license.
+ *
+ * @fileoverview Get the svn informations for subsequent work.
+ */
+
 module.exports = function(grunt){
 	grunt.registerTask(
 		'svnConfig',
@@ -26,6 +36,7 @@ module.exports = function(grunt){
 					cwd : taskDir
 				});
 
+				//Auto get the svn repository url.
 				client.getInfo(function(err, data) {
 					var svnBasePath = '';
 					if(err){

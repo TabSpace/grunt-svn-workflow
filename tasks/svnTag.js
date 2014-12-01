@@ -3,8 +3,19 @@ var $path = require('path');
 var $Client = require('svn-spawn');
 var $Spawn = require('easy-spawn');
 
+/*
+ * grunt-svn-workflow
+ * http://gruntjs.com/
+ *
+ * Copyright (c) 2014 Tony Liang
+ * Licensed under the MIT license.
+ *
+ * @fileoverview Create a tag for the project.
+ */
+
 module.exports = function(grunt){
 
+	//Resolve the web url joins.
 	var joinUrl = function(){
 		var args = Array.prototype.slice.call(arguments);
 		return args.shift().replace(/\/$/, '') + '/' + args.map(function(s){
@@ -47,6 +58,7 @@ module.exports = function(grunt){
 			var targetVersion = '';
 			var signs = {};
 			var checkComplete = function(sign) {
+				//Finish the tag create job, when online tag and dev tag are both created.
 				signs[sign] = true;
 				if(signs.online && signs.dev){
 					grunt.log.writeln('commit tag complete!');
@@ -57,6 +69,7 @@ module.exports = function(grunt){
 			};
 
 			spawnLog.cmd(['svn', 'log', onlineSvnPath, '-l', '1', '--xml'], function(err, data) {
+				//We can get the version number and logs from the online svn folder.
 				if(err){
 					grunt.log.errorlns(err);
 					grunt.fatal('svn log error!');
@@ -65,17 +78,25 @@ module.exports = function(grunt){
 					var log = '';
 					var vRegResult = (/revision="(\d+)"/).exec(data);
 					var logRegResult = (/<msg>([\w\W]*?)<\/msg>/).exec(data);
+
+					//Get the version number.
 					if(vRegResult && vRegResult[1]){
 						v = vRegResult[1];
 					}
+
+					//Get the log string.
 					if(logRegResult && logRegResult[1]){
 						log = logRegResult[1];
 					}
+
+					//All ready , start to building the tag.
 					if(v){
 						grunt.log.writeln('start build tag: %s ...', v);
 					}else{
 						grunt.fatal('can not get the version number');
 					}
+
+					//Prepare and join the tag logs.
 					if(log){
 						log = ['[revision:' + v + ']', log].join(';\n').replace(/\r\n/g, '\n');
 						grunt.log.writeln('tag log: %s ...', log);
@@ -89,10 +110,11 @@ module.exports = function(grunt){
 					});
 
 					spawnCheck.cmd(['svn', 'list', joinUrl(onlineTagPath, v)], function(err, data) {
+						//Get the folder status from the command : svn list.
 						if(err){
 							if((/non-existent/gi).test(err)){
 								grunt.log.ok('%s : tag not exists. start tag building ...', v);
-								//复制 dev/trunk 到 dev/tags
+								//Copy dev/trunk to dev/tags
 								spawnDev.cmd(['svn', 'cp', devSvnPath, joinUrl(devTagPath, v), '-m', log], function(err, data) {
 									if(err){
 										grunt.log.errorlns(err);
@@ -103,7 +125,7 @@ module.exports = function(grunt){
 									}
 								});
 
-								//复制 online/trunk 到 online/tags
+								//Copy online/trunk to online/tags
 								spawnOnline.cmd(['svn', 'cp', onlineSvnPath, joinUrl(onlineTagPath, v), '-m', log], function(err, data) {
 									if(err){
 										grunt.log.errorlns(err);
