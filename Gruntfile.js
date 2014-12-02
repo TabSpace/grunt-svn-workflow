@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 			all: [
 				'Gruntfile.js',
 				'tasks/**/*.js',
-				'<%= nodeunit.tests %>'
+				'<%= nodeunit.svnConfig %>'
 			],
 			options: {
 				jshintrc: '.jshintrc'
@@ -101,10 +101,11 @@ module.exports = function(grunt) {
 		},
 		// Before generating any new files, remove any previously-created files.
 		clean: {
-			tests: ['test/tmp']
+			tests: ['test/trunk', 'test/dist', 'test/tools/temp']
 		},
 		nodeunit: {
-			tests: ['test/*_test.js']
+			svnConfig: ['test/svnConfig_test.js'],
+			svnCheckout : ['test/svnCheckout_test.js']
 		}
 	});
 
@@ -141,10 +142,48 @@ module.exports = function(grunt) {
 		]
 	);
 
-	// Whenever the "test" task is run, first clean the "tmp" dir, then run this
-	// plugin's task(s), then test the result.
+	grunt.registerTask(
+		'cleanSvn',
+		'Clean svn path for unit tests.',
+		function(){
+			var done = this.async();
+			var repository = grunt.config.get('svnConfig.repository');
+			var queue = [
+				'dev',
+				'online'
+			].map(function(path){
+				var svnPath = repository + path;
+				grunt.log.writeln('delete svn path: "' + svnPath + '"');
+				return function(callback){
+					grunt.util.spawn({
+						cmd: 'svn',
+						args: ['delete', svnPath, '-m', '"delete ' + path + '"']
+					}, function(err, result, code){
+						grunt.log.ok('the svn path: "' + svnPath + '" has been deleted!');
+						callback();
+					});
+				};
+			});
+
+			grunt.util.async.parallel(queue, function(){
+				grunt.log.ok('svn path cleaned!');
+				done();
+			});
+		}
+	);
+
+	// Whenever the "test" task is run, first clean directories for test, then run this
+	// plugin's task(s), then test the result step by step.
 	grunt.registerTask('test', [
-		'jshint'
+		'jshint',
+		'clean',
+		'svnConfig',
+		'nodeunit:svnConfig',
+		'cleanSvn',
+		'svnInit',
+		'svnCheckout:deploy',
+		'svnCheckout:prepare',
+		'nodeunit:svnCheckout'
 	]);
 
 	// By default, lint and run all tests.
