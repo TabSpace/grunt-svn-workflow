@@ -6,7 +6,7 @@ var $Client = require('svn-spawn');
  * grunt-svn-workflow
  * http://gruntjs.com/
  *
- * Copyright (c) 2014 Tony Liang
+ * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
  * Licensed under the MIT license.
  *
  * @fileoverview Check out target files.

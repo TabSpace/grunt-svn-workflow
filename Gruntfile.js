@@ -2,7 +2,7 @@
  * grunt-svn-workflow
  * http://gruntjs.com/
  *
- * Copyright (c) 2014 Tony Liang
+ * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
  * Licensed under the MIT license.
  */
 var $path = require('path');
@@ -14,8 +14,8 @@ module.exports = function(grunt) {
 		jshint: {
 			all: [
 				'Gruntfile.js',
-				'tasks/**/*.js'
-			//	'<%= nodeunit.tests %>'
+				'tasks/**/*.js',
+				'<%= nodeunit.tests %>'
 			],
 			options: {
 				jshintrc: '.jshintrc'
@@ -98,6 +98,13 @@ module.exports = function(grunt) {
 				onlineSvn : 'online/trunk',
 				onlineTag : 'online/tags'
 			}
+		},
+		// Before generating any new files, remove any previously-created files.
+		clean: {
+			tests: ['test/tmp']
+		},
+		nodeunit: {
+			tests: ['test/*_test.js']
 		}
 	});
 

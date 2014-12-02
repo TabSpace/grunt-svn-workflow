@@ -4,7 +4,7 @@ var $askFor = require('ask-for');
  * grunt-svn-workflow
  * http://gruntjs.com/
  *
- * Copyright (c) 2014 Tony Liang
+ * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
  * Licensed under the MIT license.
  *
  * @fileoverview Pause the grunt workflow and confirm the action.
