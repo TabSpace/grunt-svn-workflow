@@ -64,7 +64,9 @@ module.exports = function(grunt) {
 			deploy : {
 				map : {
 					'trunk' : 'dev/trunk',
-					'dist' : 'online/trunk'
+					'tools/temp/devtags' : 'dev/tags',
+					'dist' : 'online/trunk',
+					'tools/temp/onlinetags' : 'online/tags'
 				}
 			},
 			prepare : {
@@ -101,11 +103,27 @@ module.exports = function(grunt) {
 		},
 		// Before generating any new files, remove any previously-created files.
 		clean: {
-			tests: ['test/trunk', 'test/dist', 'test/tools/temp']
+			tests: [
+				'test/trunk',
+				'test/dist',
+				'test/tools/temp'
+			]
+		},
+		// Copy file for unit tests.
+		copy: {
+			test: {
+				expand : true,
+				cwd : 'test/tools/temp/trunk/',
+				src : '**/*',
+				dest : 'test/tools/temp/online/'
+			}
 		},
 		nodeunit: {
 			svnConfig: ['test/svnConfig_test.js'],
-			svnCheckout : ['test/svnCheckout_test.js']
+			svnInit : ['test/svnInit_test.js'],
+			svnCheckout : ['test/svnCheckout_test.js'],
+			svnCommit : ['test/svnCommit_test.js'],
+			svnTag : ['test/svnTag_test.js']
 		}
 	});
 
@@ -118,6 +136,7 @@ module.exports = function(grunt) {
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
 	grunt.registerTask(
@@ -142,48 +161,32 @@ module.exports = function(grunt) {
 		]
 	);
 
-	grunt.registerTask(
-		'cleanSvn',
-		'Clean svn path for unit tests.',
-		function(){
-			var done = this.async();
-			var repository = grunt.config.get('svnConfig.repository');
-			var queue = [
-				'dev',
-				'online'
-			].map(function(path){
-				var svnPath = repository + path;
-				grunt.log.writeln('delete svn path: "' + svnPath + '"');
-				return function(callback){
-					grunt.util.spawn({
-						cmd: 'svn',
-						args: ['delete', svnPath, '-m', '"delete ' + path + '"']
-					}, function(err, result, code){
-						grunt.log.ok('the svn path: "' + svnPath + '" has been deleted!');
-						callback();
-					});
-				};
-			});
-
-			grunt.util.async.parallel(queue, function(){
-				grunt.log.ok('svn path cleaned!');
-				done();
-			});
-		}
-	);
-
 	// Whenever the "test" task is run, first clean directories for test, then run this
-	// plugin's task(s), then test the result step by step.
+	// plugin's task(s), test the result step by step.
 	grunt.registerTask('test', [
 		'jshint',
 		'clean',
+
 		'svnConfig',
 		'nodeunit:svnConfig',
+
 		'cleanSvn',
 		'svnInit',
 		'svnCheckout:deploy',
+		'nodeunit:svnInit',
+
+		'commitFile',
 		'svnCheckout:prepare',
-		'nodeunit:svnCheckout'
+		'nodeunit:svnCheckout',
+
+		'copy:test',
+		'svnCommit:online',
+		'svnCheckout:deploy',
+		'nodeunit:svnCommit',
+
+		'svnTag',
+		'svnCheckout:deploy',
+		'nodeunit:svnTag'
 	]);
 
 	// By default, lint and run all tests.
