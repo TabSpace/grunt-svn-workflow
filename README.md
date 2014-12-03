@@ -1,6 +1,10 @@
 #grunt-svn-workflow
 
->Manage svn folders.
+>Manage your svn folders.
+>Help you to improve the automation process.
+>The demo give you a simple, clearly, maintainable project directory structure.
+>The publish task in demo will copy your logs to target folders, from previous commit to now.
+>You can set a confirm notice in the task queue.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
@@ -15,6 +19,7 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 
 ```js
 grunt.loadNpmTasks('grunt-svn-workflow');
+```
 
 ## svnConfig task
 _Set your svn configs in this task , and put the `svnConfig` task in your svn operation task queue._
