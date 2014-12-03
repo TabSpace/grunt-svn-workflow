@@ -1,15 +1,23 @@
 #grunt-svn-workflow
 
 >Manage your svn folders.
->Help you to improve the automation process.
->The demo give you a simple, clearly, maintainable project directory structure.
->The publish task in demo will copy your logs to target folders, from previous commit to now.
->You can set a confirm notice in the task queue.
+
+Help you to improve the automation process.
+
+The demo give you a simple, clear, maintainable project directory structure.
+
+The publish task in demo will copy your logs to target folders, from previous commit to now.
+
+You can set a confirm prompt in the task queue.
 
 ## For
 For whoever have a JavaScript project on a SVN repository, and want to properly maintenance it.
 
 ## Prepare
+Create a directory named tools in your project repository path, like this:
+
+![image](https://github.com/Esoul/grunt-svn-workflow/blob/master/resources/images/screenshots/web-project-svn-directories.png)
+
 
 
 ## Getting Started
@@ -45,6 +53,6 @@ _Set your commit options, then put the task in where you want._
 _Set your tag options, then put the task in where you want._
 
 ## confirm task
-_Create a simple task and put it in the task queue, to generate a confirm notice in the running task._
+_Create a simple task and put it in the task queue, to generate a confirm prompt in the running task._
 
 
