@@ -14,11 +14,13 @@ You can set a confirm prompt in the task queue.
 For whoever have a JavaScript project on a SVN repository, and want to properly maintenance it.
 
 ## Prepare
-Create a directory named tools in your project repository path, like this:
+Create a directory named tools in your project repository path, then put your grunt file and package.json in this directory. like this:
 
 ![image](https://github.com/Esoul/grunt-svn-workflow/blob/master/resources/images/screenshots/web-project-svn-directories.png)
 
+Requires SVN CLI, set language as english.
 
+SVN version >= 1.6 .
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
