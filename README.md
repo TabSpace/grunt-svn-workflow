@@ -6,6 +6,12 @@
 >The publish task in demo will copy your logs to target folders, from previous commit to now.
 >You can set a confirm notice in the task queue.
 
+## For
+For whoever have a JavaScript project on a SVN repository, and want to properly maintenance it.
+
+## Prepare
+
+
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
 
@@ -20,6 +26,8 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 ```js
 grunt.loadNpmTasks('grunt-svn-workflow');
 ```
+
+these tasks can't give you a need the password prompt for now.
 
 ## svnConfig task
 _Set your svn configs in this task , and put the `svnConfig` task in your svn operation task queue._
