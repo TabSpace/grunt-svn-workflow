@@ -24,7 +24,7 @@ Create a local directory of your project named `'projectname'`, then checkout th
 
 Put your grunt file and package.json in this directory. like this:
 
-![image](https://github.com/Esoul/grunt-svn-workflow/blob/master/resources/images/screenshots/web-project-svn-directories.png)
+![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
 
 ## Getting Started
 This plugin requires Grunt `~0.4.0`
@@ -138,7 +138,7 @@ grunt.initConfig({
 ```
 If you run the task : `grunt svnInit`, you will get the directory structure like this:
 
-![image](https://github.com/Esoul/grunt-svn-workflow/blob/master/resources/images/screenshots/svn-directory-structure.png)
+![image](https://cloud.githubusercontent.com/assets/550449/5297204/6d00973e-7be7-11e4-9dcb-08e3e07247ab.png)
 
 ## svnCheckout multitask
 _Set your checkout options, then put the task in where you want._
@@ -484,7 +484,7 @@ module.exports = function(grunt) {
 
 Sometimes you will get a error in the svnTag task, like this:
 
-![image](https://github.com/Esoul/grunt-svn-workflow/blob/master/resources/images/screenshots/svn-tag-error.png)
+![image](https://cloud.githubusercontent.com/assets/550449/5297211/78127368-7be7-11e4-8d6b-09ce7f76c9d7.png)
 
 Run svn cleanup in tools/temp/online to resolve this.
 
