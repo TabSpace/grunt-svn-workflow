@@ -43,7 +43,7 @@ grunt.loadNpmTasks('grunt-svn-workflow');
 
 Be sure that you have stored the svn password, for now these tasks can't give you a prompt that need the password .
 
-Reference demo file to configure your task file.
+Reference demo file to configure your task file, or just copy the configuration.
 
 ## svnConfig task
 _Set your svn configs in this task , and put the `svnConfig` task in your svn operation task queue._
@@ -66,6 +66,8 @@ The path of the task directory relative to the repository url of project.
 
 ### Usage examples
 ```js
+var path = require('path');
+
 // Project svn tasks configuration.
 grunt.initConfig({
 	svnConfig : {
@@ -82,24 +84,268 @@ grunt.initConfig({
 ## svnInit task
 _Run this task with the `grunt svnInit` command._
 
+#### options.repository
+Type: `String`
+
+The repository url of project.
+
+#### options.cwd
+Type: `String`
+
+The local path of the project.
+
+#### map
+Type: `Object`
+
+Describe the SVN directory structure.
+
 ### Usage examples
+```js
+var path = require('path');
+
+grunt.initConfig({
+	svnConfig : {
+		// Project svn repository path.
+		repository : 'auto',
+		// Project deploy path.
+		projectDir : path.resolve(__dirname, '../'),
+		// Project gruntfile directory.
+		taskDir : 'tools'
+	},
+	svnInit : {
+		options : {
+			repository: '<%=svnConfig.repository%>',
+			cwd: '<%=svnConfig.projectDir%>'
+		},
+		// Build pathes according to the map.
+		map : {
+			'dev' : {
+				'branches' : 'folder',
+				'tags' : 'folder',
+				'trunk' : {
+					'html' : 'folder',
+					'css' : 'folder',
+					'js' : 'folder'
+				}
+			},
+			'online' : {
+				'tags' : 'folder',
+				'trunk' : 'folder'
+			}
+		}
+	}
+});
+```
+If you run the task : `grunt svnInit`, you will get the directory structure like this:
+
+![image](https://github.com/Esoul/grunt-svn-workflow/blob/master/resources/images/screenshots/svn-directory-structure.png)
 
 ## svnCheckout multitask
 _Set your checkout options, then put the task in where you want._
 
+#### options.repository
+Type: `String`
+
+The repository url of project.
+
+#### options.cwd
+Type: `String`
+
+The local path of the project.
+
+#### map
+Type: `Object`
+
+Describe the SVN directory mapping relationship with the local path.
+
 ### Usage examples
+```js
+var path = require('path');
+
+grunt.initConfig({
+	svnConfig : {
+		// Project svn repository path.
+		repository : 'auto',
+		// Project deploy path.
+		projectDir : path.resolve(__dirname, '../'),
+		// Project gruntfile directory.
+		taskDir : 'tools'
+	},
+	svnCheckout : {
+		options : {
+			repository: '<%=svnConfig.repository%>',
+			cwd: '<%=svnConfig.projectDir%>'
+		},
+		deploy : {
+			map : {
+				'trunk' : 'dev/trunk',
+				'dist' : 'online/trunk'
+			}
+		}
+	}
+});
+```
 
 ## svnCommit multitask
 _Set your commit options, then put the task in where you want._
 
+#### options.repository
+Type: `String`
+
+The repository url of project.
+
+#### options.cwd
+Type: `String`
+
+The local path of the project.
+
+#### logResource
+Type: `String`
+
+The commit task can copy logs from a svn path.
+It's a relative path.
+Set it as `''` to close logs copying.
+
+#### svn
+Type: `String`
+
+SVN relative path to be commited.
+
+#### src
+Type: `String`
+
+Local relative path to be commited.
+
 ### Usage examples
+```js
+var path = require('path');
+
+grunt.initConfig({
+	svnConfig : {
+		// Project svn repository path.
+		repository : 'auto',
+		// Project deploy path.
+		projectDir : path.resolve(__dirname, '../'),
+		// Project gruntfile directory.
+		taskDir : 'tools'
+	},
+	svnCommit : {
+		options : {
+			repository: '<%=svnConfig.repository%>',
+			cwd: '<%=svnConfig.projectDir%>'
+		},
+		online : {
+			logResource : 'dev/trunk',
+			svn : 'online/trunk',
+			src : 'tools/temp/online'
+		}
+	}
+});
+```
 
 ## svnTag multitask
 _Set your tag options, then put the task in where you want._
 
+#### options.repository
+Type: `String`
+
+The repository url of project.
+
+#### options.cwd
+Type: `String`
+
+The local path of the project.
+
+#### dev
+Type: `String`
+
+Local relative path for development.
+
+#### devSvn
+Type: `String`
+
+Repository relative url for development.
+
+#### devTag
+Type: `String`
+
+Tag repository relative url for development.
+
+#### online
+Type: `String`
+
+Local relative path for publishing.
+
+#### onlineSvn
+Type: `String`
+
+Repository relative url for publishing.
+
+#### onlineTag
+Type: `String`
+
+Tag repository relative url for publishing.
+
 ### Usage examples
+```js
+var path = require('path');
+
+grunt.initConfig({
+	svnConfig : {
+		// Project svn repository path.
+		repository : 'auto',
+		// Project deploy path.
+		projectDir : path.resolve(__dirname, '../'),
+		// Project gruntfile directory.
+		taskDir : 'tools'
+	},
+	svnTag : {
+		options : {
+			repository: '<%=svnConfig.repository%>',
+			cwd: '<%=svnConfig.projectDir%>'
+		},
+		common : {
+			dev : 'tools/temp/trunk',
+			devSvn : 'dev/trunk',
+			devTag : 'dev/tags',
+			online : 'tools/temp/online',
+			onlineSvn : 'online/trunk',
+			onlineTag : 'online/tags'
+		}
+	}
+});
+```
 
 ## confirm multitask
 _Create a simple task and put it in the task queue, to generate a confirm prompt in the running task._
 
+#### msg
+Type: `String`
+
+The message of prompts.
+
 ### Usage examples
+```js
+var path = require('path');
+
+grunt.initConfig({
+	confirm : {
+		distribute : {
+			msg : 'publish ?'
+		}
+	}
+});
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
