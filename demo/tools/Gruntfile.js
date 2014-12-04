@@ -11,6 +11,21 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
+		// Clean files for demo publish.
+		clean: {
+			beforePublish: [
+				'temp'
+			]
+		},
+		// Copy files for demo publish.
+		copy: {
+			forPublish: {
+				expand : true,
+				cwd : 'temp/trunk/',
+				src : '**/*',
+				dest : 'temp/online/'
+			}
+		},
 		confirm : {
 			distribute : {
 				msg : 'publish ?'
@@ -91,6 +106,8 @@ module.exports = function(grunt) {
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-svn-workflow');
 
 	grunt.registerTask(
@@ -106,8 +123,13 @@ module.exports = function(grunt) {
 		'publish',
 		'Pack and compress files, then distribute.',
 		[
+			'clean:beforePublish',
 			'svnConfig',
 			'svnCheckout:prepare',
+			
+			//Add your other tasks here, such as copy, uglify, clean and so on.
+			'copy:forPublish',
+
 			'confirm:distribute',
 			'svnCommit:online',
 			'svnTag'
