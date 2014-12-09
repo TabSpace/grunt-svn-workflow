@@ -483,12 +483,6 @@ module.exports = function(grunt) {
 
 ## Tips
 
-Sometimes you will get a error in the svnTag task, like this:
-
-![image](https://cloud.githubusercontent.com/assets/550449/5297211/78127368-7be7-11e4-8d6b-09ce7f76c9d7.png)
-
-Run svn cleanup in tools/temp/online to resolve this.
-
 If you have a error like this:
 
 ```shell
