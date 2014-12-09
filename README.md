@@ -491,7 +491,10 @@ Fatal error: 1801 tag exists ! cancel tag building!
 
 That means there is no change between now and previous commit.
 
+## Release History
 
+ * 2014-12-09   v0.1.1   Fix the bug that tag building will have a error occasionally.
+ * 2014-12-04   v0.1.0   First official release for Grunt 0.4.0.
 
 
 
