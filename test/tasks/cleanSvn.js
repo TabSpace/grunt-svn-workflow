@@ -10,8 +10,8 @@ module.exports = function(grunt){
 				'online'
 			].map(function(path){
 				var svnPath = repository + path;
-				grunt.log.writeln('delete svn path: "' + svnPath + '"');
 				return function(callback){
+					grunt.log.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
 					grunt.util.spawn({
 						cmd: 'svn',
 						args: ['delete', svnPath, '-m', '"delete ' + path + '"']
@@ -22,7 +22,7 @@ module.exports = function(grunt){
 				};
 			});
 
-			grunt.util.async.parallel(queue, function(){
+			grunt.util.async.series(queue, function(){
 				grunt.log.ok('svn path cleaned!');
 				done();
 			});

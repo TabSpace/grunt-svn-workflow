@@ -19,11 +19,13 @@ module.exports = function(grunt){
 
 			grunt.file.write($path.join(srcPath, 'js/test.js'), '\/\/' + timeStamp);
 
+			grunt.log.writeln('svn add ' + srcPath);
 			client.addLocal(function(err){
 				if(err){
 					grunt.log.errorlns(err);
 					grunt.fatal('add local ' + srcPath + ' error!');
 				}else{
+					grunt.log.writeln('svn commit ' + srcPath + ' -m "' + timeStamp + '"');
 					client.commit(timeStamp, function(err) {
 						if (err){
 							grunt.log.errorlns(err);

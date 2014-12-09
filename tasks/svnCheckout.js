@@ -45,26 +45,26 @@ module.exports = function(grunt){
 					if (!$fs.existsSync(srcPath)){
 						//Check out files if we don't have the workingcopy.
 						grunt.file.mkdir(srcPath);
-						grunt.log.writeln('start checkout : %s to %s', svnPath, srcPath);
+						grunt.log.writeln('svn checkout ' + svnPath + ' ' + srcPath);
 						client.checkout(svnPath, function(err) {
 							if (err){
 								grunt.log.errorlns(err);
-								grunt.fatal('checkout : ' + svnPath + ' error!');
+								grunt.fatal('svn checkout ' + svnPath + ' error!');
 							}else{
-								grunt.log.writeln('checkout : %s complete!', svnPath);
+								grunt.log.writeln('svn checkout ' + svnPath + ' complete!');
 							}
 							grunt.log.writeln();
 							callback();
 						});
 					}else{
 						//Update the workingcopy if we already have checked out.
-						grunt.log.writeln('start update : %s to %s', svnPath, srcPath);
+						grunt.log.writeln('svn update ' + svnPath + ' ' + srcPath);
 						client.update(function(err) {
 							if (err){
 								grunt.log.errorlns(err);
-								grunt.fatal('update : ' + svnPath + ' error!');
+								grunt.fatal('svn update ' + svnPath + ' error!');
 							}else{
-								grunt.log.writeln('update : %s complete!', svnPath);
+								grunt.log.writeln('svn update ' + svnPath + ' complete!');
 							}
 							grunt.log.writeln();
 							callback();

@@ -44,9 +44,9 @@ module.exports = function(grunt){
 				}
 			}
 
-			grunt.log.writeln('commit:', srcPath);
+			grunt.log.writeln('svn commit ', srcPath);
 			if(data.logResource){
-				grunt.log.writeln('copy log:', logResourcePath);
+				grunt.log.writeln('copy log from ', logResourcePath);
 			}
 			grunt.log.writeln();
 
@@ -61,6 +61,7 @@ module.exports = function(grunt){
 				var spawnLog = new $Spawn({
 					cwd: srcPath
 				});
+				grunt.log.writeln('svn log ' + svnPath + ' -l 1 --xml');
 				spawnLog.cmd(['svn', 'log', svnPath, '-l', '1', '--xml'], function(err, data){
 					if(err){
 						grunt.log.errorlns(err);
@@ -77,7 +78,7 @@ module.exports = function(grunt){
 							log = logRegResult[1];
 						}
 						if(v){
-							grunt.log.writeln('prev revision: %s', v);
+							grunt.log.writeln('prev revision is ' + v);
 							info.prevVersion = v;
 							info.prevLog = log;
 							callback();
@@ -107,6 +108,7 @@ module.exports = function(grunt){
 					cwd: srcPath
 				});
 				
+				grunt.log.writeln('svn log ' + logResourcePath + ' -r ' + prevVersion + ' :HEAD --xml');
 				spawnLog.cmd(['svn', 'log', logResourcePath, '-r', prevVersion + ':HEAD', '--xml'], function(err, data){
 					if(err){
 						grunt.log.errorlns(err);
@@ -129,7 +131,7 @@ module.exports = function(grunt){
 							log = 'auto commit';
 						}
 
-						grunt.log.writeln('commit log: %s ...', log);
+						grunt.log.writeln('commit log is \n' + log);
 						grunt.log.writeln();
 						info.commitLog = log;
 						callback();
@@ -143,15 +145,17 @@ module.exports = function(grunt){
 					cwd : srcPath
 				});
 				var commitLog = info.commitLog || 'commit';
+				grunt.log.writeln('svn add ' + srcPath);
 				client.addLocal(function(err) {
 					if(err){
 						grunt.log.errorlns(err);
-						grunt.fatal('add local ' + srcPath + ' error!');
+						grunt.fatal('svn add ' + srcPath + ' error!');
 					}else{
+						grunt.log.writeln('svn commit ' + srcPath);
 						client.commit(commitLog, function(err) {
 							if (err){
 								grunt.log.errorlns(err);
-								grunt.fatal('commit : ' + srcPath + ' error!');
+								grunt.fatal('svn commit ' + srcPath + ' error!');
 							}else{
 								callback();
 							}
