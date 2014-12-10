@@ -5,9 +5,9 @@
 
 Help you to improve the automation process.
 
-The demo give you a simple, clear, maintainable project directory structure.
+The example give you a simple, clear, maintainable project directory structure.
 
-The publish task in demo will copy your logs to target folders, from previous commit to now.
+The publish task in example will copy your logs to target folders, from previous commit to now.
 
 You can set a confirm prompt in the task queue.
 
@@ -44,7 +44,7 @@ grunt.loadNpmTasks('grunt-svn-workflow');
 
 Be sure that you have stored the svn password, for now these tasks can't give you a prompt that need the password .
 
-Reference demo file to configure your task file, or just copy the configuration.
+Reference example file to configure your task file, or just copy the configuration.
 
 ## svnConfig task
 _Set your svn configs in this task , and put the `svnConfig` task in your svn operation task queue._
@@ -336,9 +336,9 @@ grunt.initConfig({
 });
 ```
 
-## Demo
+## example
 
-The full gruntfile demo:
+The full gruntfile example:
 
 ```js
 var path = require('path');
@@ -347,13 +347,13 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		// Clean files for demo publish.
+		// Clean files for example publish.
 		clean: {
 			beforePublish: [
 				'temp'
 			]
 		},
-		// Copy files for demo publish.
+		// Copy files for example publish.
 		copy: {
 			forPublish: {
 				expand : true,
