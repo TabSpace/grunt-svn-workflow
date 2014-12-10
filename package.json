@@ -2,7 +2,8 @@
   "name": "grunt-svn-workflow",
   "version": "0.1.1",
   "description": "Manage svn folders.",
-  "author": "Tony Liang",
+  "author": "Tony Liang <pillar0514@gmail.com>",
+  "homepage": "https://github.com/Esoul/grunt-svn-workflow",
   "repository": {
     "type": "git",
     "url": "git@github.com:Esoul/grunt-svn-workflow.git"
@@ -34,5 +35,8 @@
     "tasks",
     "LICENSE"
   ],
+  "bugs": {
+    "url": "https://github.com/Esoul/grunt-svn-workflow/issues"
+  },
   "license": "MIT"
 }

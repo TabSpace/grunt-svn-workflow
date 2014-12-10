@@ -1,4 +1,5 @@
 #grunt-svn-workflow
+[![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
 [![pageviews](https://sourcegraph.com/api/repos/github.com/Esoul/grunt-svn-workflow/counters/views.png?no-count)](https://sourcegraph.com/github.com/Esoul/grunt-svn-workflow)
 
 >Manage your svn folders.
