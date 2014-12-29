@@ -1,7 +1,8 @@
 #grunt-svn-workflow
 [![Build Status: Linux](https://travis-ci.org/Esoul/grunt-svn-workflow.svg?branch=master)](https://travis-ci.org/Esoul/grunt-svn-workflow)
-[![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 [![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
+
+[![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 [![pageviews](https://sourcegraph.com/api/repos/github.com/Esoul/grunt-svn-workflow/counters/views.png?no-count)](https://sourcegraph.com/github.com/Esoul/grunt-svn-workflow)
 
 >Manage your svn folders.
