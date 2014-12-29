@@ -4,18 +4,10 @@ var $grunt = require('grunt');
 var $path = require('path');
 
 exports.svnInit = function(test){
-	test.expect(7);
+	test.expect(5);
 	test.ok(
 		$grunt.file.isDir($path.resolve('./test/trunk')),
 		'checkout "repo://dev/trunk" to  "./test/trunk" .'
-	);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/trunk/html')),
-		'we have folder "trunk/html" .'
-	);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/trunk/css')),
-		'we have folder "trunk/css" .'
 	);
 	test.ok(
 		$grunt.file.isDir($path.resolve('./test/trunk/js')),
