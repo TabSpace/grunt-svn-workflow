@@ -204,12 +204,16 @@ Type: `String`
 
 The local path of the project.
 
+#### log
+Type: `String` | `Function`
+
+The commit log. Can be a function that return a log string.
+
 #### logResource
 Type: `String`
 
 The commit task can copy logs from a svn path.
-It's a relative path.
-Set it as `''` to close logs copying.
+It's a relative path, will disable the "log" options.
 
 #### svn
 Type: `String`
@@ -497,6 +501,7 @@ That means there is no change between now and previous commit.
 
 ## Release History
 
+ * 2015-04-01   v0.1.2   Add log option for svnCommit task.
  * 2014-12-09   v0.1.1   Fix the bug that tag building will have a error occasionally.
  * 2014-12-04   v0.1.0   First official release for Grunt 0.4.0.
 
