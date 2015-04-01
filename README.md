@@ -243,6 +243,22 @@ grunt.initConfig({
 			repository: '<%=svnConfig.repository%>',
 			cwd: '<%=svnConfig.projectDir%>'
 		},
+		withoutLog : {
+			svn : 'online/trunk',
+			src : 'trunk'
+		},
+		useStrLog : {
+			log : 'custom log.'
+			svn : 'online/trunk',
+			src : 'trunk'
+		},
+		useFunction : {
+			log : function(){
+				return 'custom log ' + Date.now();
+			},
+			svn : 'online/trunk',
+			src : 'trunk'
+		},
 		online : {
 			logResource : 'dev/trunk',
 			svn : 'online/trunk',
