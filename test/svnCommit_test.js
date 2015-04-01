@@ -4,14 +4,15 @@ var $grunt = require('grunt');
 var $path = require('path');
 
 exports.svnCommit = function(test){
-	test.expect(7);
+	test.expect(12);
 
 	var trunkJsPath = $path.resolve('./test/trunk/js/test.js');
+	var trunkHtmlPath = $path.resolve('./test/trunk/html/test.html');
+	var trunkCssPath = $path.resolve('./test/trunk/css/test.css');
+
 	var onlineJsPath = $path.resolve('./test/tools/temp/online/js/test.js');
 	var distJsPath = $path.resolve('./test/dist/js/test.js');
 	var repository = $grunt.config.get('svnConfig.repository');
-	var text = $grunt.file.read(trunkJsPath);
-	text = text.trim().replace(/^\/\//, '');
 
 	test.ok(
 		$grunt.file.isDir($path.resolve('./test/dist/html')),
@@ -39,15 +40,48 @@ exports.svnCommit = function(test){
 		'dist file is same as trunk file. '
 	);
 
-	$grunt.util.spawn({
-		cmd: 'svn',
-		args: ['log', repository + 'online/trunk', '-l', 1, '--xml']
-	}, function(err, result, code){
-		test.ok(
-			result.stdout.indexOf(text) >= 0,
-			'make sure "online/trunk" have correct log. '
-		);
-
+	$grunt.util.async.series([
+		function(callback){
+			$grunt.util.spawn({
+				cmd: 'svn',
+				args: ['log', repository + 'dev/trunk', '-l', 3, '--xml']
+			}, function(err, result, code){
+				test.ok(
+					result.stdout.indexOf($grunt.file.read(trunkJsPath)) >= 0,
+					'make sure "online/trunk/js" have correct log. '
+				);
+				test.ok(
+					result.stdout.indexOf($grunt.file.read(trunkHtmlPath)) >= 0,
+					'make sure "online/trunk/html" have correct log. '
+				);
+				test.ok(
+					result.stdout.indexOf('auto commit') >= 0,
+					'make sure "online/trunk/css" have correct log. '
+				);
+				callback();
+			});
+		},
+		function(callback){
+			$grunt.util.spawn({
+				cmd: 'svn',
+				args: ['log', repository + 'online/trunk', '-l', 1, '--xml']
+			}, function(err, result, code){
+				test.ok(
+					result.stdout.indexOf($grunt.file.read(trunkJsPath)) >= 0,
+					'make sure "online/trunk/js" have correct log. '
+				);
+				test.ok(
+					result.stdout.indexOf($grunt.file.read(trunkHtmlPath)) >= 0,
+					'make sure "online/trunk/html" have correct log. '
+				);
+				test.ok(
+					result.stdout.indexOf('auto commit') >= 0,
+					'make sure "online/trunk/css" have correct log. '
+				);
+				callback();
+			});
+		}
+	], function(){
 		test.done();
 	});
 

@@ -35,6 +35,7 @@ module.exports = function(grunt){
 			var srcPath = $path.join(conf.cwd, data.src);
 			var svnPath = joinUrl(conf.repository, data.svn);
 			var logResourcePath = '';
+			var logStr = '';
 
 			if(data.logResource){
 				if(!arg){
@@ -42,11 +43,21 @@ module.exports = function(grunt){
 				}else{
 					logResourcePath = joinUrl(conf.repository, data.logResource, 'branches', arg);
 				}
+			}else{
+				if(typeof(data.log) === 'function'){
+					logStr = data.log();
+				}else if(typeof(data.log) === 'string'){
+					logStr = data.log;
+				}else{
+					logStr = 'auto commit ' + (new Date()).toLocaleString();
+				}
 			}
 
 			grunt.log.writeln('svn commit ', srcPath);
 			if(data.logResource){
 				grunt.log.writeln('copy log from ', logResourcePath);
+			}else{
+				grunt.log.writeln('commit log: ', logStr);
 			}
 			grunt.log.writeln();
 
@@ -144,7 +155,7 @@ module.exports = function(grunt){
 				var client = new $Client({
 					cwd : srcPath
 				});
-				var commitLog = info.commitLog || 'commit';
+				var commitLog = info.commitLog || logStr;
 				grunt.log.writeln('svn add ' + srcPath);
 				client.addLocal(function(err) {
 					if(err){

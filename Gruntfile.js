@@ -9,8 +9,11 @@ var $path = require('path');
 
 module.exports = function(grunt) {
 
+	var timeStamp = Date.now();
+
 	// Project configuration.
 	grunt.initConfig({
+		timeStamp : timeStamp,
 		jshint: {
 			all: [
 				'Gruntfile.js',
@@ -81,7 +84,24 @@ module.exports = function(grunt) {
 				repository: '<%=svnConfig.repository%>',
 				cwd: '<%=svnConfig.projectDir%>'
 			},
+			css : {
+				svn : 'dev/trunk',
+				src : 'trunk'
+			},
+			html : {
+				log : function(){
+					return timeStamp + 'html';
+				},
+				svn : 'dev/trunk',
+				src : 'trunk'
+			},
+			js : {
+				log : '<%=timeStamp%>js',
+				svn : 'dev/trunk',
+				src : 'trunk'
+			},
 			online : {
+				log : 'onlinelog',
 				logResource : 'dev/trunk',
 				svn : 'online/trunk',
 				src : 'tools/temp/online'
@@ -140,6 +160,33 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
 	grunt.registerTask(
+		'makeCSS',
+		'Make a html file for unit tests.',
+		function(){
+			var srcPath = $path.resolve('./test/trunk');
+			grunt.file.write($path.join(srcPath, 'css/test.css'), timeStamp+'css');
+		}
+	);
+
+	grunt.registerTask(
+		'makeHTML',
+		'Make a html file for unit tests.',
+		function(){
+			var srcPath = $path.resolve('./test/trunk');
+			grunt.file.write($path.join(srcPath, 'html/test.html'), timeStamp+'html');
+		}
+	);
+
+	grunt.registerTask(
+		'makeJS',
+		'Make a js file for unit tests.',
+		function(){
+			var srcPath = $path.resolve('./test/trunk');
+			grunt.file.write($path.join(srcPath, 'js/test.js'), timeStamp+'js');
+		}
+	);
+
+	grunt.registerTask(
 		'deploy',
 		'Checkout the workingcopy according to the folder map.',
 		[
@@ -175,7 +222,15 @@ module.exports = function(grunt) {
 		'svnCheckout:deploy',
 		'nodeunit:svnInit',
 
-		'commitFile',
+		'makeCSS',
+		'svnCommit:css',
+
+		'makeHTML',
+		'svnCommit:html',
+
+		'makeJS',
+		'svnCommit:js',
+
 		'svnCheckout:prepare',
 		'nodeunit:svnCheckout',
 

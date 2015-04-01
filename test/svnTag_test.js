@@ -9,9 +9,6 @@ exports.svnTag = function(test){
 	var trunkJsPath = $path.resolve('./test/trunk/js/test.js');
 	var repository = $grunt.config.get('svnConfig.repository');
 
-	var text = $grunt.file.read(trunkJsPath);
-	text = text.trim().replace(/^\/\//, '');
-
 	$grunt.util.spawn({
 		cmd: 'svn',
 		args: ['list', repository + 'dev/tags']
@@ -59,7 +56,7 @@ exports.svnTag = function(test){
 			args: ['log', repository + 'online/tags/' + tag, '-l', 1, '--xml']
 		}, function(err, result, code){
 			test.ok(
-				result.stdout.indexOf(text) >= 0,
+				result.stdout.indexOf($grunt.file.read(trunkJsPath)) >= 0,
 				'"online/tags/" get correct log .'
 			);
 

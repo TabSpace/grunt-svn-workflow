@@ -28,9 +28,9 @@ exports.svnCheckout = function(test){
 	test.equal(
 		$grunt.file.read(updateJsPath),
 		$grunt.file.read(trunkJsPath),
-		'update file is same as commit file. '
+		'js update file is same as commit file. '
 	);
-	
+
 	test.done();
 };
 
