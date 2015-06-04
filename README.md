@@ -16,7 +16,7 @@ The publish task in example will copy your logs to target folders, from previous
 You can set a confirm prompt in the task queue.
 
 ## For
-For whoever have a JavaScript project on a SVN repository, and want to properly maintenance it.
+For whoever have a JavaScript project on a SVN repository, and want to maintain it properly.
 
 ## Prepare
 Be sure that SVN version >= 1.6 .
