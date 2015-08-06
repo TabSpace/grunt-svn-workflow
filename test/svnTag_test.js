@@ -11,7 +11,10 @@ exports.svnTag = function(test){
 
 	$grunt.util.spawn({
 		cmd: 'svn',
-		args: ['list', repository + 'dev/tags']
+		args: ['list', repository + 'dev/tags'],
+		opts : {
+			stdio : 'inherit'
+		}
 	}, function(err, result, code){
 		var rs = result.stdout.trim().split(/\n/)[0];
 		var tag = rs.trim().replace(/[\/\\]/g, '');
