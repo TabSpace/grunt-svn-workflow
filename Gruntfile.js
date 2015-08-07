@@ -31,11 +31,14 @@ module.exports = function(grunt) {
 		},
 		svnConfig : {
 			// Project svn repository path.
-			repository : 'auto',
-			// Project deploy path.
-			projectDir : $path.resolve(__dirname, 'test'),
-			// Project gruntfile directory.
-			taskDir : 'tools'
+			project : 'https://svn.sinaapp.com/liangdong/1/test/svn-workflow/',
+			// Get svn repository path from local path.
+			base : {
+				// Local svn folder path.
+				from : $path.resolve(__dirname, 'test/tools'),
+				// Relative path from local svn folder path to online target svn path.
+				to : '../'
+			}
 		},
 		svnInit : {
 			options : {
@@ -208,40 +211,50 @@ module.exports = function(grunt) {
 		]
 	);
 
+	grunt.registerTask('svn-test-svnConfig', [
+		'svnConfig',
+		'nodeunit:svnConfig'
+	]);
+
+	// grunt.registerTask('svn-test-svnConfig', [
+	// 	'svnConfig',
+	// 	'nodeunit:svnConfig'
+	// ]);
+
 	// Whenever the "test" task is run, first clean directories for test, then run this
 	// plugin's task(s), test the result step by step.
 	grunt.registerTask('svn-test', [
 		'jshint',
 
-		'svnConfig',
-		'nodeunit:svnConfig',
-		'cleanSvn',
-		'clean',
+		// 'svnConfig',
+		// 'nodeunit:svnConfig',
+		// 'cleanSvn',
+		// 'clean',
 
-		'svnInit',
-		'svnCheckout:deploy',
-		'nodeunit:svnInit',
+		// 'svnInit',
+		// 'svnCheckout:deploy',
+		// 'nodeunit:svnInit',
 
-		'makeCSS',
-		'svnCommit:css',
+		// 'makeCSS',
+		// 'svnCommit:css',
 
-		'makeHTML',
-		'svnCommit:html',
+		// 'makeHTML',
+		// 'svnCommit:html',
 
-		'makeJS',
-		'svnCommit:js',
+		// 'makeJS',
+		// 'svnCommit:js',
 
-		'svnCheckout:prepare',
-		'nodeunit:svnCheckout',
+		// 'svnCheckout:prepare',
+		// 'nodeunit:svnCheckout',
 
-		'copy:test',
-		'svnCommit:online',
-		'svnCheckout:deploy',
-		'nodeunit:svnCommit',
+		// 'copy:test',
+		// 'svnCommit:online',
+		// 'svnCheckout:deploy',
+		// 'nodeunit:svnCommit',
 
-		'svnTag',
-		'svnCheckout:deploy',
-		'nodeunit:svnTag'
+		// 'svnTag',
+		// 'svnCheckout:deploy',
+		// 'nodeunit:svnTag'
 	]);
 
 	// Whenever the "test" task is run, first clean directories for test, then run this

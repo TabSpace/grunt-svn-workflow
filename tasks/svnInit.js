@@ -1,6 +1,7 @@
 var $fs = require('fs');
 var $path = require('path');
-var $Client = require('svn-spawn');
+var $tools = require('../utils/tools');
+var $cmdSeries = require('../utils/cmdSeries');
 
 /*
  * grunt-svn-workflow
@@ -16,11 +17,6 @@ module.exports = function(grunt){
 
 	var $async = grunt.util.async;
 
-	var typeOf = function(object){
-		return Object.prototype.toString.call(object)
-			.toLowerCase().replace(/^\[object|]$/gi, '').trim();
-	};
-
 	var getMapPathes = function(map){
 		var pathes = [];
 		map = map || {};
@@ -33,7 +29,7 @@ module.exports = function(grunt){
 				if(p){
 					pathes.push(p);
 				}
-				if(typeOf(object[key]) === 'object'){
+				if($tools.type(object[key]) === 'object'){
 					getPathes(object[key], p);
 				}
 			}

@@ -14,7 +14,10 @@ module.exports = function(grunt){
 					grunt.log.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
 					grunt.util.spawn({
 						cmd: 'svn',
-						args: ['delete', svnPath, '-m', '"delete ' + path + '"']
+						args: ['delete', svnPath, '-m', '"delete ' + path + '"'],
+						opts : {
+							stdio : 'inherit'
+						}
 					}, function(err, result, code){
 						grunt.log.ok('the svn path: "' + svnPath + '" has been deleted!');
 						callback();
