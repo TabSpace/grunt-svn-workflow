@@ -57,6 +57,7 @@ var cmdSeries = function(grunt, cmds, options){
 
 	commands = commands.map(function(spOptions){
 		return function(data, callback){
+			data = data || {};
 			if($tools.type(spOptions) === 'function'){
 				spOptions = spOptions(
 					data.error,
@@ -84,9 +85,14 @@ var cmdSeries = function(grunt, cmds, options){
 		callback(null, {});
 	});
 
-	grunt.util.async.waterfall(commands, function(error, result, code){
+	grunt.util.async.waterfall(commands, function(error, data){
+		data = data || {};
 		if($tools.type(conf.done) === 'function'){
-			conf.done(error, result, code);
+			conf.done(
+				data.error || error,
+				data.result,
+				data.code
+			);
 		}
 	});
 
