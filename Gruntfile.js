@@ -71,7 +71,7 @@ module.exports = function(grunt) {
 			test : {
 				repository : '<%=svnConfig.test%>',
 				map : {
-					'inner' : 'deep/inner'
+					'/test/checkout' : 'deep/inner'
 				}
 			},
 			deploy : {
@@ -225,8 +225,8 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('svn-test-svnCheckout', [
 		'svnConfig',
-		'svnCheckout:test'
-		// 'nodeunit:svnCheckout'
+		'svnCheckout:test',
+		'nodeunit:svnCheckout'
 	]);
 
 	// grunt.registerTask('svn-test-svnConfig', [
@@ -238,6 +238,11 @@ module.exports = function(grunt) {
 	// plugin's task(s), test the result step by step.
 	grunt.registerTask('svn-test', [
 		'jshint',
+
+		'svn-test-svnConfig',
+
+		'svn-test-svnCheckout'
+
 
 		// 'svnConfig',
 		// 'nodeunit:svnConfig',

@@ -71,7 +71,7 @@ module.exports = function(grunt){
 				};
 
 				commands.push(function(error, result, code){
-					grunt.log.writeln('svn', motion, svnPath);
+					grunt.log.writeln('svn', motion, svnPath, srcPath);
 					return cmd;
 				});
 			});

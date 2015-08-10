@@ -10,7 +10,6 @@ module.exports = function(grunt){
 		function(){
 			var done = this.async();
 
-			var conf = grunt.config.get('svnConfig');
 			var conf = this.options();
 			var data = this.data;
 			var target = this.target;
