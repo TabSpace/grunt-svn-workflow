@@ -32,7 +32,7 @@ cmdSeries(grunt, [
 		return cmd;
 	}
 ], {
-	done : function(error, result, code){
+	complete : function(error, result, code){
 		console.log('[error]:\n', error);
 		console.log('[result]:\n', result);
 		console.log('[code]:\n', code);
@@ -45,7 +45,7 @@ var cmdSeries = function(grunt, cmds, options){
 
 	var sheller = {};
 	var conf = $tools.extend({
-		done : function(error, result, code){}
+		complete : function(error, result, code){}
 	}, options);
 
 	var commands = cmds;
@@ -57,6 +57,13 @@ var cmdSeries = function(grunt, cmds, options){
 
 	commands = commands.map(function(spOptions){
 		return function(data, callback){
+			if($tools.type(data) === 'function'){
+				if(!callback){
+					callback = data;
+					data = {};
+				}
+			}
+
 			data = data || {};
 			if($tools.type(spOptions) === 'function'){
 				spOptions = spOptions(
@@ -72,6 +79,9 @@ var cmdSeries = function(grunt, cmds, options){
 			}
 
 			grunt.util.spawn(spOptions, function(error, result, code){
+				if($tools.type(spOptions.done) === 'function'){
+					spOptions.done(error, result, code);
+				}
 				callback(null, {
 					error : error,
 					result : result,
@@ -81,14 +91,10 @@ var cmdSeries = function(grunt, cmds, options){
 		}
 	});
 
-	commands.unshift(function(callback){
-		callback(null, {});
-	});
-
 	grunt.util.async.waterfall(commands, function(error, data){
 		data = data || {};
-		if($tools.type(conf.done) === 'function'){
-			conf.done(
+		if($tools.type(conf.complete) === 'function'){
+			conf.complete(
 				data.error || error,
 				data.result,
 				data.code

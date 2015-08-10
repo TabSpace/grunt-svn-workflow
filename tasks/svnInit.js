@@ -3,19 +3,11 @@ var $path = require('path');
 var $tools = require('../utils/tools');
 var $cmdSeries = require('../utils/cmdSeries');
 
-/*
- * grunt-svn-workflow
- * http://gruntjs.com/
- *
- * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
- * Licensed under the MIT license.
- *
- * @fileoverview Automatically create the directory structure to ensure the normal workflow.
- */
-
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;
+
+	//svn mkdir https://svn.sinaapp.com/liangdong/1/test/svn-workflow/test/inner/inner/inner --parents -m ""
 
 	var getMapPathes = function(map){
 		var pathes = [];

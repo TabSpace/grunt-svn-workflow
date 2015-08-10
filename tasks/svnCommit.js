@@ -3,16 +3,6 @@ var $path = require('path');
 var $Client = require('svn-spawn');
 var $Spawn = require('easy-spawn');
 
-/*
- * grunt-svn-workflow
- * http://gruntjs.com/
- *
- * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
- * Licensed under the MIT license.
- *
- * @fileoverview Commit processed files to online trunk.
- */
-
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;

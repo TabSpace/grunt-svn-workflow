@@ -13,6 +13,7 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
+		projectDir : $path.resolve(__dirname, 'test'),
 		timeStamp : timeStamp,
 		jshint: {
 			all: [
@@ -33,17 +34,17 @@ module.exports = function(grunt) {
 			// Project svn repository path.
 			project : 'https://svn.sinaapp.com/liangdong/1/test/svn-workflow/',
 			// Get svn repository path from local path.
-			base : {
+			test : {
 				// Local svn folder path.
 				from : $path.resolve(__dirname, 'test/tools'),
 				// Relative path from local svn folder path to online target svn path.
-				to : '../'
+				to : '../test/'
 			}
 		},
 		svnInit : {
 			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
+				cwd: '<%=projectDir%>',
+				repository: '<%=svnConfig.base%>'
 			},
 			// Build pathes according to the map.
 			map : {
@@ -64,8 +65,14 @@ module.exports = function(grunt) {
 		},
 		svnCheckout : {
 			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
+				cwd: '<%=projectDir%>',
+				repository: '<%=svnConfig.base%>'
+			},
+			test : {
+				repository : '<%=svnConfig.test%>',
+				map : {
+					'inner' : 'deep/inner'
+				}
 			},
 			deploy : {
 				map : {
@@ -77,7 +84,7 @@ module.exports = function(grunt) {
 			},
 			prepare : {
 				map : {
-					'tools/temp/online':'online/trunk',
+					'tools/temp/online' : 'online/trunk',
 					'tools/temp/trunk' : 'dev/trunk'
 				}
 			}
@@ -214,6 +221,12 @@ module.exports = function(grunt) {
 	grunt.registerTask('svn-test-svnConfig', [
 		'svnConfig',
 		'nodeunit:svnConfig'
+	]);
+
+	grunt.registerTask('svn-test-svnCheckout', [
+		'svnConfig',
+		'svnCheckout:test'
+		// 'nodeunit:svnCheckout'
 	]);
 
 	// grunt.registerTask('svn-test-svnConfig', [

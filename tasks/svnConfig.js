@@ -1,18 +1,8 @@
-var $path = require('path');
 var $tools = require('../utils/tools');
 var $cmdSeries = require('../utils/cmdSeries');
 
-/*
- * grunt-svn-workflow
- * http://gruntjs.com/
- *
- * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
- * Licensed under the MIT license.
- *
- * @fileoverview Get the svn informations for subsequent work.
- */
-
 module.exports = function(grunt){
+
 
 	grunt.registerMultiTask(
 		'svnConfig',
@@ -55,7 +45,7 @@ module.exports = function(grunt){
 					args : ['info', from]
 				}
 			], {
-				done : function(error, result, code){
+				complete : function(error, result, code){
 					var repositoryUrl = '';
 					if(error){
 						grunt.log.errorlns(error);
@@ -70,14 +60,13 @@ module.exports = function(grunt){
 						}, {});
 
 						if(json.URL){
-							repositoryUrl = $path.join(json.URL, to);
+							repositoryUrl = $tools.join(json.URL, to);
 							grunt.config.set('svnConfig.' + target, repositoryUrl);
 							ok(repositoryUrl);
 						}else{
 							grunt.fatal('Get svn repository url failure.');
 						}
 					}
-					done();
 				}
 			});
 		}

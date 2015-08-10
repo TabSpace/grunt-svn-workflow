@@ -1,16 +1,6 @@
 var $fs = require('fs');
-var $path = require('path');
-var $Client = require('svn-spawn');
-
-/*
- * grunt-svn-workflow
- * http://gruntjs.com/
- *
- * Copyright (c) 2014 Tony Liang [pillar0514@gmail.com]
- * Licensed under the MIT license.
- *
- * @fileoverview Check out target files.
- */
+var $tools = require('../utils/tools');
+var $cmdSeries = require('../utils/cmdSeries');
 
 module.exports = function(grunt){
 
@@ -20,62 +10,83 @@ module.exports = function(grunt){
 		'svnCheckout',
 		'Checkout files to target directory.',
 		function(arg){
+
 			var done = this.async();
 			var conf = this.options();
 			var data = this.data;
-			var map = data.map;
-			var queue = [];
+			var target = this.target;
 
-			Object.keys(map).forEach(function(localPath){
-				var svnPath = map[localPath];
-				var srcPath = $path.join(conf.cwd, localPath);
+			var options = Object.keys(conf).reduce(function(obj, key){
+				obj[key] = data[key] || conf[key];
+				return obj;
+			}, {});
+
+			this.requires(['svnConfig']);
+
+			var commands = [];
+
+			if(!data.map){
+				data.map = {'/' : '/'};
+			}
+
+			Object.keys(data.map).forEach(function(localPath){
+				var svnPath = data.map[localPath];
+				var srcPath = $tools.join(options.cwd, localPath);
 
 				// $path.join will replace 'http://path' 'to http:/path'.
 				if(svnPath){
-					svnPath = conf.repository + svnPath;
+					svnPath = $tools.join(options.repository, svnPath);
 				}else{
-					svnPath = conf.repository + '/dev/branches/' + arg;
+					svnPath = $tools.join(options.repository, arg);
 				}
-				
-				queue.push(function(callback){
-					var client = new $Client({
-						cwd : srcPath
-					});
-					
-					if (!$fs.existsSync(srcPath)){
-						//Check out files if we don't have the workingcopy.
-						grunt.file.mkdir(srcPath);
-						grunt.log.writeln('svn checkout ' + svnPath + ' ' + srcPath);
-						client.checkout(svnPath, function(err) {
-							if (err){
-								grunt.log.errorlns(err);
-								grunt.fatal('svn checkout ' + svnPath + ' error!');
-							}else{
-								grunt.log.writeln('svn checkout ' + svnPath + ' complete!');
-							}
-							grunt.log.writeln();
-							callback();
-						});
+
+				var cmd = {};
+				var motion = '';
+
+				cmd.cmd = 'svn';
+
+				cmd.args = [];
+				cmd.opts = {
+					stdio : 'inherit'
+				};
+
+				if (!$fs.existsSync(srcPath)){
+					motion = 'checkout';
+					cmd.args.push('checkout');
+					cmd.args.push(svnPath);
+					cmd.args.push(srcPath);
+				}else{
+					motion = 'update';
+					cmd.opts.cwd = srcPath;
+					cmd.args.push('update');
+				}
+
+				cmd.done = function(error, result, code){
+					if (error){
+						grunt.log.errorlns(error).error();
+						grunt.fatal(['svn error!'].join(' '));
 					}else{
-						//Update the workingcopy if we already have checked out.
-						grunt.log.writeln('svn update ' + svnPath + ' ' + srcPath);
-						client.update(function(err) {
-							if (err){
-								grunt.log.errorlns(err);
-								grunt.fatal('svn update ' + svnPath + ' error!');
-							}else{
-								grunt.log.writeln('svn update ' + svnPath + ' complete!');
-							}
-							grunt.log.writeln();
-							callback();
-						});
+						grunt.log.ok();
 					}
+				};
+
+				commands.push(function(error, result, code){
+					grunt.log.writeln('svn', motion, svnPath);
+					return cmd;
 				});
 			});
 
-			$async.series(queue, function(){
-				grunt.log.ok('all directories were checkouted!');
-				done();
+			$cmdSeries(grunt, commands, {
+				complete : function(error, result, code){
+					var detail = 'task svnCheckout' + (target ? ':' + target : '');
+					if (error){
+						grunt.log.errorlns(error).error();
+						grunt.fatal([detail, 'error!'].join(' '));
+					}else{
+						grunt.log.ok(detail, 'completed.');
+					}
+					done();
+				}
 			});
 		}
 	);

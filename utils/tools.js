@@ -1,3 +1,5 @@
+var $path = require('path');
+
 var makeArray = function(item){
 	return Array.prototype.slice.call(item);
 };
@@ -31,10 +33,31 @@ var extend = function(){
 	return origin;
 };
 
+var join = function(){
+	var args = makeArray(arguments);
+	var first = args.shift();
+	var protocol = '';
+	if(first.indexOf('://') > 0){
+		protocol = first.split('//')[0];
+		first = first.split('//')[1];
+	}
+
+	if(first){
+		args.unshift(first);
+	}
+	var next = $path.join.apply(null, args);
+	if(protocol){
+		return protocol + '//' + next;
+	}else{
+		return next;
+	}
+};
+
 module.exports = {
 	makeArray : makeArray,
 	makeObject : makeObject,
 	type : type,
+	join : join,
 	extend : extend
 };
 
