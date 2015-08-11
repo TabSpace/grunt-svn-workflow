@@ -9,6 +9,10 @@ var $path = require('path');
 
 module.exports = function(grunt) {
 
+	//test account:
+	//id : svn_workflow@sina.cn
+	//password : test123
+
 	var timeStamp = Date.now();
 
 	// Project configuration.
@@ -70,29 +74,25 @@ module.exports = function(grunt) {
 		},
 		svnCommit : {
 			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
+				cwd: '<%=projectDir%>',
+				repository: '<%=svnConfig.test%>'
 			},
 			test_normal : {
-				svn : 'dev/trunk',
-				src : 'trunk'
+				log : '<%=timeStamp%>_normal',
+				svn : 'commit/normal',
+				src : 'test/commit/normal'
 			},
 			test_log_from_fn : {
 				log : function(){
-					return timeStamp + 'html';
+					return timeStamp + '_fn';
 				},
-				svn : 'dev/trunk',
-				src : 'trunk'
-			},
-			test_log_from_tpl : {
-				log : '<%=timeStamp%>js',
-				svn : 'dev/trunk',
-				src : 'trunk'
+				svn : 'commit/fn',
+				src : 'test/commit/fn'
 			},
 			test_log_from_svn : {
 				log : '{dev/trunk}',
-				svn : 'online/trunk',
-				src : 'tools/temp/online'
+				svn : 'commit/svn',
+				src : 'test/commit/svn'
 			}
 		},
 		svnTag : {
@@ -120,9 +120,6 @@ module.exports = function(grunt) {
 
 	// Actually load this plugin's task(s).
 	grunt.loadTasks('tasks');
-
-	// Load test tasks.
-	grunt.loadTasks('test/tasks');
 
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -180,10 +177,21 @@ module.exports = function(grunt) {
 		'nodeunit:svnInit'
 	]);
 
-	// grunt.registerTask('svn-test-svnConfig', [
-	// 	'svnConfig',
-	// 	'nodeunit:svnConfig'
-	// ]);
+	//unit test for svnCommit
+	grunt.registerTask(
+		'svn-test-svnCommit-prepare', 
+		'svn-test-svnCommit-prepare',
+		function(){
+			var done = this.async();
+			done();
+		}
+	);
+
+	grunt.registerTask('svn-test-svnCommit', [
+		'svnConfig',
+		'svn-test-svnCommit-prepare',
+		'svnCommit',
+	]);
 
 	// Whenever the "test" task is run, first clean directories for test, then run this
 	// plugin's task(s), test the result step by step.
@@ -191,7 +199,8 @@ module.exports = function(grunt) {
 		'jshint',
 		'svn-test-svnConfig',
 		'svn-test-svnInit',
-		'svn-test-svnCheckout'
+		'svn-test-svnCheckout',
+		'svn-test-svnCommit'
 	]);
 
 	// By default, lint and run all tests.
