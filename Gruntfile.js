@@ -6,6 +6,7 @@
  * Licensed under the MIT license.
  */
 var $path = require('path');
+var $readline = require('readline');
 
 module.exports = function(grunt) {
 
@@ -15,7 +16,6 @@ module.exports = function(grunt) {
 
 	var timeStamp = Date.now();
 
-	// Project configuration.
 	grunt.initConfig({
 		projectDir : $path.resolve(__dirname, 'test'),
 		timeStamp : timeStamp,
@@ -35,24 +35,27 @@ module.exports = function(grunt) {
 			}
 		},
 		svnConfig : {
-			// Project svn repository path.
+			// 项目 svn 根目录
 			project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/',
-			// Get svn repository path from local path.
+			// 如果配置项是一个对象，则通过 from, to 获取 svn 根路径
 			test : {
-				// Local svn folder path.
+				// 用于获取 svn 根路径的本地 svn 目录
 				from : $path.resolve(__dirname, 'test/test/base'),
-				// Relative path from local svn folder repository url to online target svn repository url.
+				// 最终我们需要定位的 svn 路径与本地 svn 目录 svn 路径的相对路径
 				to : '../'
 			}
 		},
 		svnInit : {
 			options : {
+				// 用于存放创建目录临时文件的本地路径
 				cwd: '<%=projectDir%>/test',
+				// 需要进行初始化的目标 svn 路径
 				repository: '<%=svnConfig.test%>'
 			},
 			test : {
+				// 需要进行初始化的目标 svn 路径，这里的 repository 属性会覆盖 options 对应属性
 				repository: '<%=svnConfig.project%>/test',
-				// Build pathes according to the map.
+				// 根据这个 map 对象来创建初始化文件夹
 				map : {
 					'svninit' : {
 						'inner' : 'folder'
@@ -62,27 +65,40 @@ module.exports = function(grunt) {
 		},
 		svnCheckout : {
 			options : {
+				// 本地根目录
 				cwd: '<%=projectDir%>',
+				// svn 根路径
 				repository: '<%=svnConfig.project%>'
 			},
 			test : {
+				// 子选项与 options 同名的选项会覆盖 options 提供的选项
 				repository : '<%=svnConfig.test%>',
+				// 根据这个 map 对象来检出目录
+				// 均为 key : value 格式
+				// key 为相对于本地根目录的相对路径
+				// value 为相对于 svn 跟路径的相对路径
 				map : {
-					'/test/checkout' : 'checkout'
+					'test/checkout' : 'checkout'
 				}
 			}
 		},
 		svnCommit : {
 			options : {
+				// 用于提交文件的本地路径根目录
 				cwd: '<%=projectDir%>',
+				// 用于提交文件的 svn 跟路径
 				repository: '<%=svnConfig.test%>'
 			},
 			test_normal : {
+				// 提交问件时填充的日志
 				log : '<%=timeStamp%>_normal',
+				// 相对于 svn 跟路径的相对路径
 				svn : 'commit/normal',
+				// 相对于本地根目录的相对目录，用于提交的文件存储在这里
 				src : 'test/commit/normal'
 			},
 			test_log_from_fn : {
+				// 提交问件时填充的日志可以是一个函数的返回值
 				log : function(){
 					return timeStamp + '_fn';
 				},
@@ -90,9 +106,18 @@ module.exports = function(grunt) {
 				src : 'test/commit/fn'
 			},
 			test_log_from_svn : {
-				log : '{dev/trunk}',
+				// 如果用大括号包裹，可以提供一个相对于 svn 跟路径的相对路径
+				// 该目标 svn 路径的日志将会被复制作为提交日志
+				// 仅复制大于提交 svn 路径版本号的日志
+				log : '{commit/log}',
 				svn : 'commit/svn',
 				src : 'test/commit/svn'
+			},
+			test_log_from_ask : {
+				// 如果希望手工填入日志，设置 log 为 {ask}
+				log : '{ask}',
+				svn : 'commit/ask',
+				src : 'test/commit/ask'
 			}
 		},
 		svnTag : {
@@ -183,18 +208,57 @@ module.exports = function(grunt) {
 		'svn-test-svnCommit-prepare',
 		function(){
 			var done = this.async();
-			done();
+
+			var sp = grunt.util.spawn({
+				cmd : 'grunt',
+				grunt : true,
+				args : ['svn-test-svnCommit-ask']
+			}, function(error, result, code){
+				done();
+			});
+
+			var mark = false;
+			sp.stdout.on('data', function(data){
+				var msg = data.toString().trim();
+				if(!msg){return;}
+				if(msg.indexOf('svnCommit:test_log_from_ask') > 0){
+					mark = true;
+				}
+				if(mark === true){
+					console.log(msg);
+				}
+				if(msg.indexOf('Input the log message for') === 0){
+					sp.stdin.write('my log\n');
+				}
+			});
 		}
 	);
+
+	// process.stdin.on('pause', function(){
+	// 	var rl = $readline.createInterface({
+	// 		input: process.stdin,
+	// 		output: process.stdout
+	// 	});
+
+	// 	rl.on('line', function(line){
+	// 		rl.write('my log');
+	// 	});
+
+	// });
+
+	grunt.registerTask('svn-test-svnCommit-ask', [
+		'svnConfig',
+		'svnCommit:test_log_from_ask'
+	]);
 
 	grunt.registerTask('svn-test-svnCommit', [
 		'svnConfig',
 		'svn-test-svnCommit-prepare',
-		'svnCommit',
+		// 'svnCommit',
+		// 'nodeunit:svnCommit'
 	]);
 
-	// Whenever the "test" task is run, first clean directories for test, then run this
-	// plugin's task(s), test the result step by step.
+	// Get test result step by step.
 	grunt.registerTask('test', [
 		'jshint',
 		'svn-test-svnConfig',

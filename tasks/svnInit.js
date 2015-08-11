@@ -33,7 +33,6 @@ module.exports = function(grunt){
 		'svnInit',
 		'Create svn folders with a template.',
 		function(arg){
-			var done = this.async();
 
 			var done = this.async();
 			var conf = this.options();
@@ -41,7 +40,7 @@ module.exports = function(grunt){
 			var target = this.target;
 
 			var options = Object.keys(conf).reduce(function(obj, key){
-				obj[key] = data[key] || conf[key];
+				obj[key] = data[key] || conf[key] || '';
 				return obj;
 			}, {});
 

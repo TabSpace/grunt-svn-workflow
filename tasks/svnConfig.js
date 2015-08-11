@@ -27,6 +27,7 @@ module.exports = function(grunt){
 				return;
 			}
 
+			// 如果配置项是一个对象，那么我们取 from, to 的值，计算出目标SVN路径
 			if($tools.type(data) === 'object'){
 				from = data.from || process.env.PWD;
 				to = data.to || '';
@@ -37,6 +38,8 @@ module.exports = function(grunt){
 
 			grunt.log.writeln('Get repository url from : ', from);
 
+			// from 为本地 svn 文件夹路径
+			// 用 svn info 命令获取其 svn 地址，再和 to 选项一起计算目标 svn 路径
 			$cmdSeries(grunt, [
 				{
 					cmd : 'svn',
