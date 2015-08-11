@@ -32,60 +32,39 @@ module.exports = function(grunt) {
 		},
 		svnConfig : {
 			// Project svn repository path.
-			project : 'https://svn.sinaapp.com/liangdong/1/test/svn-workflow/',
+			project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/',
 			// Get svn repository path from local path.
 			test : {
 				// Local svn folder path.
-				from : $path.resolve(__dirname, 'test/tools'),
-				// Relative path from local svn folder path to online target svn path.
-				to : '../test/'
+				from : $path.resolve(__dirname, 'test/test/base'),
+				// Relative path from local svn folder repository url to online target svn repository url.
+				to : '../'
 			}
 		},
 		svnInit : {
 			options : {
-				cwd: '<%=projectDir%>',
-				repository: '<%=svnConfig.base%>'
+				cwd: '<%=projectDir%>/test',
+				repository: '<%=svnConfig.test%>'
 			},
-			// Build pathes according to the map.
-			map : {
-				'dev' : {
-					'branches' : 'folder',
-					'tags' : 'folder',
-					'trunk' : {
-						'html' : 'folder',
-						'css' : 'folder',
-						'js' : 'folder'
+			test : {
+				repository: '<%=svnConfig.project%>/test',
+				// Build pathes according to the map.
+				map : {
+					'svninit' : {
+						'inner' : 'folder'
 					}
-				},
-				'online' : {
-					'tags' : 'folder',
-					'trunk' : 'folder'
 				}
 			}
 		},
 		svnCheckout : {
 			options : {
 				cwd: '<%=projectDir%>',
-				repository: '<%=svnConfig.base%>'
+				repository: '<%=svnConfig.project%>'
 			},
 			test : {
 				repository : '<%=svnConfig.test%>',
 				map : {
-					'/test/checkout' : 'deep/inner'
-				}
-			},
-			deploy : {
-				map : {
-					'trunk' : 'dev/trunk',
-					'tools/temp/devtags' : 'dev/tags',
-					'dist' : 'online/trunk',
-					'tools/temp/onlinetags' : 'online/tags'
-				}
-			},
-			prepare : {
-				map : {
-					'tools/temp/online' : 'online/trunk',
-					'tools/temp/trunk' : 'dev/trunk'
+					'/test/checkout' : 'checkout'
 				}
 			}
 		},
@@ -94,25 +73,24 @@ module.exports = function(grunt) {
 				repository: '<%=svnConfig.repository%>',
 				cwd: '<%=svnConfig.projectDir%>'
 			},
-			css : {
+			test_normal : {
 				svn : 'dev/trunk',
 				src : 'trunk'
 			},
-			html : {
+			test_log_from_fn : {
 				log : function(){
 					return timeStamp + 'html';
 				},
 				svn : 'dev/trunk',
 				src : 'trunk'
 			},
-			js : {
+			test_log_from_tpl : {
 				log : '<%=timeStamp%>js',
 				svn : 'dev/trunk',
 				src : 'trunk'
 			},
-			online : {
-				log : 'onlinelog',
-				logResource : 'dev/trunk',
+			test_log_from_svn : {
+				log : '{dev/trunk}',
 				svn : 'online/trunk',
 				src : 'tools/temp/online'
 			}
@@ -129,23 +107,6 @@ module.exports = function(grunt) {
 				online : 'tools/temp/online',
 				onlineSvn : 'online/trunk',
 				onlineTag : 'online/tags'
-			}
-		},
-		// Before generating any new files, remove any previously-created files.
-		clean: {
-			tests: [
-				'test/trunk',
-				'test/dist',
-				'test/tools/temp'
-			]
-		},
-		// Copy file for unit tests.
-		copy: {
-			test: {
-				expand : true,
-				cwd : 'test/tools/temp/trunk/',
-				src : '**/*',
-				dest : 'test/tools/temp/online/'
 			}
 		},
 		nodeunit: {
@@ -165,58 +126,7 @@ module.exports = function(grunt) {
 
 	// These plugins provide necessary tasks.
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
-
-	grunt.registerTask(
-		'makeCSS',
-		'Make a html file for unit tests.',
-		function(){
-			var srcPath = $path.resolve('./test/trunk');
-			grunt.file.write($path.join(srcPath, 'css/test.css'), timeStamp+'css');
-		}
-	);
-
-	grunt.registerTask(
-		'makeHTML',
-		'Make a html file for unit tests.',
-		function(){
-			var srcPath = $path.resolve('./test/trunk');
-			grunt.file.write($path.join(srcPath, 'html/test.html'), timeStamp+'html');
-		}
-	);
-
-	grunt.registerTask(
-		'makeJS',
-		'Make a js file for unit tests.',
-		function(){
-			var srcPath = $path.resolve('./test/trunk');
-			grunt.file.write($path.join(srcPath, 'js/test.js'), timeStamp+'js');
-		}
-	);
-
-	grunt.registerTask(
-		'deploy',
-		'Checkout the workingcopy according to the folder map.',
-		[
-			'svnConfig',
-			'svnCheckout:deploy'
-		]
-	);
-
-	grunt.registerTask(
-		'publish',
-		'Pack and compress files, then distribute.',
-		[
-			'svnConfig',
-			'svnCheckout:prepare',
-			'confirm:distribute',
-			'svnCommit:online',
-			'svnTag',
-			'deploy'
-		]
-	);
 
 	grunt.registerTask('svn-test-svnConfig', [
 		'svnConfig',
@@ -229,6 +139,12 @@ module.exports = function(grunt) {
 		'nodeunit:svnCheckout'
 	]);
 
+	grunt.registerTask('svn-test-svnInit', [
+		'svnConfig',
+		'svnInit:test',
+		// 'nodeunit:svnInit'
+	]);
+
 	// grunt.registerTask('svn-test-svnConfig', [
 	// 	'svnConfig',
 	// 	'nodeunit:svnConfig'
@@ -238,11 +154,9 @@ module.exports = function(grunt) {
 	// plugin's task(s), test the result step by step.
 	grunt.registerTask('svn-test', [
 		'jshint',
-
 		'svn-test-svnConfig',
-
+		'svn-test-svnInit',
 		'svn-test-svnCheckout'
-
 
 		// 'svnConfig',
 		// 'nodeunit:svnConfig',

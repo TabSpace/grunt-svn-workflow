@@ -64,7 +64,7 @@ module.exports = function(grunt){
 				cmd.done = function(error, result, code){
 					if (error){
 						grunt.log.errorlns(error).error();
-						grunt.fatal(['svn error!'].join(' '));
+						grunt.fatal(['svn', motion, svnPath, srcPath, 'error!'].join(' '));
 					}else{
 						grunt.log.ok();
 					}

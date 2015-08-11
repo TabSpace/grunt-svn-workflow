@@ -1,13 +1,10 @@
 var $fs = require('fs');
-var $path = require('path');
 var $tools = require('../utils/tools');
 var $cmdSeries = require('../utils/cmdSeries');
 
 module.exports = function(grunt){
 
 	var $async = grunt.util.async;
-
-	//svn mkdir https://svn.sinaapp.com/liangdong/1/test/svn-workflow/test/inner/inner/inner --parents -m ""
 
 	var getMapPathes = function(map){
 		var pathes = [];
@@ -17,7 +14,7 @@ module.exports = function(grunt){
 			var p = '';
 			parent = parent || '';
 			for(var key in object){
-				p = $path.join(parent, key);
+				p = $tools.join(parent, key);
 				if(p){
 					pathes.push(p);
 				}
@@ -32,67 +29,168 @@ module.exports = function(grunt){
 		return pathes;
 	};
 
-	grunt.registerTask(
+	grunt.registerMultiTask(
 		'svnInit',
 		'Create svn folders with a template.',
 		function(arg){
-			var that = this;
-			var svnConf = grunt.config.get('svnConfig');
+			var done = this.async();
 
-			if(!svnConf){
-				grunt.fatal('Task svnInit need task: svnConfig.');
-			}
+			var done = this.async();
+			var conf = this.options();
+			var data = this.data;
+			var target = this.target;
 
-			//Build init checkout options.
-			var svnInitCheckoutMap = {};
-			var svnInitLocalPath = $path.join(svnConf.taskDir, 'temp/init');
-			svnInitCheckoutMap[svnInitLocalPath] = '/';
-			grunt.config.set('svnCheckout.init', {
-				map : svnInitCheckoutMap
+			var options = Object.keys(conf).reduce(function(obj, key){
+				obj[key] = data[key] || conf[key];
+				return obj;
+			}, {});
+
+			this.requires(['svnConfig']);
+
+			var svnPath = options.repository;
+			var srcPath = options.cwd;
+			var tempPath = $tools.join(srcPath, 'temp/init');
+
+			var commands = [];
+
+			commands.push({
+				cmd : 'svn',
+				args : ['info', svnPath]
 			});
 
-			grunt.config.set('svnCommit.init', {
-				svn : '/',
-				src : svnInitLocalPath
+			commands.push(function(error, result, code){
+				var json = result.stdout.split(/\n/g).reduce(function(obj, str){
+					var index = str.indexOf(':');
+					var key = str.substr(0, index).trim().toLowerCase();
+					var value = str.substr(index + 1).trim();
+					obj[key] = value;
+					return obj;
+				}, {});
+
+				var cmd = {};
+
+				if(json.url){
+					cmd = {
+						cmd : 'echo',
+						args : ['Create files for ' + json.url]
+					};
+				}else{
+					grunt.log.writeln('Auto create svn path', svnPath);
+					cmd.cmd = 'svn';
+					cmd.args = [
+						'mkdir',
+						svnPath,
+						'--parents',
+						'-m',
+						'Create folder by svnInit:' + target + ' task'
+					];
+					cmd.opts = {
+						stdio : 'inherit'
+					};
+				}
+
+				return cmd;
 			});
 
-			grunt.registerTask(
-				'svnInitWithMap',
-				'Mkdir according to map options.',
-				function(){
-					var queue = [];
-					var conf = that.options();
-					var tempPath = $path.join(conf.cwd, svnConf.taskDir, 'temp/init');
-					var map = grunt.config.get('svnInit.map');
+			commands.push(function(error, result, code){
 
-					var pathes = getMapPathes(map);
-					pathes.forEach(function(localPath){
-						grunt.log.writeln('mkdir:', localPath);
-						localPath = $path.join(tempPath, localPath);
-						grunt.file.mkdir(localPath);
-					});
+				var motion = 'checkout';
+				var cmd = {};
+				cmd.cmd = 'svn';
 
-					grunt.log.writeln('Create', pathes.length, 'folders.');
+				cmd.args = [];
+				cmd.opts = {
+					stdio : 'inherit'
+				};
+
+				if (!$fs.existsSync(tempPath)){
+					motion = 'checkout';
+					cmd.args.push('checkout');
+					cmd.args.push(svnPath);
+					cmd.args.push(tempPath);
+				}else{
+					motion = 'update';
+					cmd.opts.cwd = tempPath;
+					cmd.args.push('update');
 				}
-			);
 
-			grunt.registerTask(
-				'svnInitCleanTemp',
-				'Clean temp files after init.',
-				function(){
-					var conf = that.options();
-					var tempPath = $path.join(conf.cwd, svnConf.taskDir, 'temp/init');
-					grunt.file.delete(tempPath);
+				cmd.done = function(error, result, code){
+					if (error){
+						grunt.log.errorlns(error).error();
+						grunt.fatal(['svn', motion, svnPath, tempPath, 'error!'].join(' '));
+					}else{
+						grunt.log.ok();
+					}
+				};
+
+				grunt.log.writeln('svn', motion, svnPath, tempPath);
+
+				return cmd;
+			});
+
+			commands.push(function(error, result, code){
+
+				var pathes = getMapPathes(data.map);
+				pathes.forEach(function(localPath){
+					grunt.log.writeln('mkdir:', localPath);
+					localPath = $tools.join(tempPath, localPath);
+					grunt.file.mkdir(localPath);
+				});
+
+				grunt.log.writeln('Create', pathes.length, 'folders.');
+
+				var cmd = {
+					cmd : 'svn',
+					args : ['add', '.', '--force'],
+					opts : {
+						stdio : 'inherit',
+						cwd : tempPath
+					}
+				};
+
+				return cmd;
+			});
+
+			commands.push(function(error, result, code){
+
+				var cmd = {
+					cmd : 'svn',
+					args : [
+						'commit',
+						'-m',
+						'Create folder by svnInit:' + target + ' task'
+					],
+					opts : {
+						stdio : 'inherit',
+						cwd : tempPath
+					}
+				};
+
+				cmd.done = function(error, result, code){
+					if (error){
+						grunt.log.errorlns(error).error();
+						grunt.fatal(['svnInit:' + target, 'commit error!'].join(' '));
+					}else{
+						// grunt.file.delete(tempPath);
+						grunt.log.writeln('svnInit:' + target, 'commited.').ok();
+					}
+				};
+
+				return cmd;
+			});
+
+			$cmdSeries(grunt, commands, {
+				complete : function(error, result, code){
+					var detail = 'task svnInit' + (target ? ':' + target : '');
+					if (error){
+						grunt.log.errorlns(error).error();
+						grunt.fatal([detail, 'error!'].join(' '));
+					}else{
+						grunt.log.ok(detail, 'completed.');
+					}
+					done();
 				}
-			);
-
-			grunt.task.run([
-				'svnConfig',
-				'svnCheckout:init',
-				'svnInitWithMap',
-				'svnCommit:init',
-				'svnInitCleanTemp'
-			]);
+			});
 		}
 	);
 };

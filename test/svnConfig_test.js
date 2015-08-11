@@ -8,13 +8,13 @@ exports.svnConfig = function(test){
 
 	test.equal(
 		$grunt.config.get('svnConfig.project'),
-		'https://svn.sinaapp.com/liangdong/1/test/svn-workflow/',
+		'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/',
 		'Should auto get the working directory repository.'
 	);
 
 	test.equal(
 		$grunt.config.get('svnConfig.test'),
-		'https://svn.sinaapp.com/liangdong/1/test/svn-workflow/test/',
+		'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/',
 		'Should auto get the working directory repository.'
 	);
 
