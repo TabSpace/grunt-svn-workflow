@@ -152,49 +152,11 @@ module.exports = function(grunt) {
 
 	// Whenever the "test" task is run, first clean directories for test, then run this
 	// plugin's task(s), test the result step by step.
-	grunt.registerTask('svn-test', [
+	grunt.registerTask('test', [
 		'jshint',
 		'svn-test-svnConfig',
 		'svn-test-svnInit',
 		'svn-test-svnCheckout'
-
-		// 'svnConfig',
-		// 'nodeunit:svnConfig',
-		// 'cleanSvn',
-		// 'clean',
-
-		// 'svnInit',
-		// 'svnCheckout:deploy',
-		// 'nodeunit:svnInit',
-
-		// 'makeCSS',
-		// 'svnCommit:css',
-
-		// 'makeHTML',
-		// 'svnCommit:html',
-
-		// 'makeJS',
-		// 'svnCommit:js',
-
-		// 'svnCheckout:prepare',
-		// 'nodeunit:svnCheckout',
-
-		// 'copy:test',
-		// 'svnCommit:online',
-		// 'svnCheckout:deploy',
-		// 'nodeunit:svnCommit',
-
-		// 'svnTag',
-		// 'svnCheckout:deploy',
-		// 'nodeunit:svnTag'
-	]);
-
-	// Whenever the "test" task is run, first clean directories for test, then run this
-	// plugin's task(s), test the result step by step.
-	grunt.registerTask('test', [
-		'jshint',
-		'nodeunit:svnInit',
-		'nodeunit:svnCheckout'
 	]);
 
 	// By default, lint and run all tests.

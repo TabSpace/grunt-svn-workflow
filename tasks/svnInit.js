@@ -171,8 +171,8 @@ module.exports = function(grunt){
 						grunt.log.errorlns(error).error();
 						grunt.fatal(['svnInit:' + target, 'commit error!'].join(' '));
 					}else{
-						// grunt.file.delete(tempPath);
 						grunt.log.writeln('svnInit:' + target, 'commited.').ok();
+						grunt.file.delete(tempPath);
 					}
 				};
 
