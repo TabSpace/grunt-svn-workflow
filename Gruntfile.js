@@ -128,21 +128,56 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
+	//unit test for svnConfig
 	grunt.registerTask('svn-test-svnConfig', [
 		'svnConfig',
 		'nodeunit:svnConfig'
 	]);
 
+	//unit test for svnCheckout
+	grunt.registerTask(
+		'svn-test-svnCheckout-prepare', 
+		'svn-test-svnCheckout-prepare',
+		function(){
+			var folderPath = $path.resolve('./test/test/checkout/');
+			grunt.file.delete(folderPath);
+		}
+	);
+
 	grunt.registerTask('svn-test-svnCheckout', [
 		'svnConfig',
+		'svn-test-svnCheckout-prepare',
 		'svnCheckout:test',
 		'nodeunit:svnCheckout'
 	]);
 
+	//unit test for svnInit
+	grunt.registerTask(
+		'svn-test-svnInit-prepare', 
+		'svn-test-svnInit-prepare',
+		function(){
+			var done = this.async();
+			var path = 'test/svninit';
+			var svnPath = grunt.config.get('svnConfig.project') + 'test/svninit';
+			grunt.log.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
+			grunt.util.spawn({
+				cmd: 'svn',
+				args: ['delete', svnPath, '-m', '"delete ' + path + '"'],
+				opts : {
+					stdio : 'inherit'
+				}
+			}, function(err, result, code){
+				grunt.log.ok('The svn path: "' + svnPath + '" has been deleted!');
+				done();
+			});
+		}
+	);
+
 	grunt.registerTask('svn-test-svnInit', [
 		'svnConfig',
+		'svn-test-svnInit-prepare',
 		'svnInit:test',
-		// 'nodeunit:svnInit'
+		'nodeunit:svnInit'
 	]);
 
 	// grunt.registerTask('svn-test-svnConfig', [

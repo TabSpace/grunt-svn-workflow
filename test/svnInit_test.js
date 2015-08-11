@@ -4,27 +4,30 @@ var $grunt = require('grunt');
 var $path = require('path');
 
 exports.svnInit = function(test){
-	test.expect(5);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/trunk')),
-		'checkout "repo://dev/trunk" to  "./test/trunk" .'
-	);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/trunk/js')),
-		'we have folder "trunk/js" .'
-	);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/dist')),
-		'checkout "repo://online/trunk" to "./test/dist" .'
-	);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/tools/temp/devtags')),
-		'checkout "repo://dev/tags" to "./test/tools/temp/trunk" .'
-	);
-	test.ok(
-		$grunt.file.isDir($path.resolve('./test/tools/temp/onlinetags')),
-		'checkout "repo://online/tags" to "./test/tools/temp/onlinetags" .'
-	);
-	test.done();
+	test.expect(1);
+
+	var svnPath = 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/svninit/inner';
+
+	$grunt.util.spawn({
+		cmd: 'svn',
+		args: ['info', svnPath]
+	}, function(error, result, code){
+
+		var json = result.stdout.split(/\n/g).reduce(function(obj, str){
+			var index = str.indexOf(':');
+			var key = str.substr(0, index).trim().toLowerCase();
+			var value = str.substr(index + 1).trim();
+			obj[key] = value;
+			return obj;
+		}, {});
+
+		test.equal(
+			json.url,
+			svnPath,
+			'Should created svn folder : ' + svnPath + '.'
+		);
+
+		test.done();
+	});
 };
 
