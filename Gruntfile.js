@@ -7,6 +7,7 @@
  */
 var $path = require('path');
 var $readline = require('readline');
+var $tools = require('./utils/tools');
 
 module.exports = function(grunt) {
 
@@ -109,7 +110,7 @@ module.exports = function(grunt) {
 				// 如果用大括号包裹，可以提供一个相对于 svn 跟路径的相对路径
 				// 该目标 svn 路径的日志将会被复制作为提交日志
 				// 仅复制大于提交 svn 路径版本号的日志
-				log : '{commit/log}',
+				log : '{commit/fn}',
 				svn : 'commit/svn',
 				src : 'test/commit/svn'
 			},
@@ -134,7 +135,9 @@ module.exports = function(grunt) {
 				onlineTag : 'online/tags'
 			}
 		},
+		testResult : true,
 		nodeunit: {
+			grunt : ['test/grunt_test.js'],
 			svnConfig: ['test/svnConfig_test.js'],
 			svnInit : ['test/svnInit_test.js'],
 			svnCheckout : ['test/svnCheckout_test.js'],
@@ -209,67 +212,72 @@ module.exports = function(grunt) {
 		function(){
 			var done = this.async();
 
-			var sp = grunt.util.spawn({
-				cmd : 'grunt',
-				grunt : true,
-				args : ['svn-test-svnCommit-ask']
-			}, function(error, result, code){
-				done();
-			});
+			var srcPath = $path.resolve('./test/test/commit/');
+			var svnPath = $tools.join(
+				grunt.config.get('svnCommit.options.repository'),
+				'commit'
+			);
 
-			var mark = false;
-			sp.stdout.on('data', function(data){
-				var msg = data.toString().trim();
-				if(!msg){return;}
-				if(msg.indexOf('svnCommit:test_log_from_ask') > 0){
-					mark = true;
-				}
-				if(mark === true){
-					console.log(msg);
-				}
-				if(msg.indexOf('Input the log message for') === 0){
-					sp.stdin.write('my log\n');
-				}
+			grunt.util.spawn({
+				cmd : 'svn',
+				args : ['checkout', svnPath, srcPath]
+			}, function(error, result, code){
+				['ask', 'fn', 'log', 'normal'].forEach(function(dir){
+					var targetPath = $path.join(srcPath, dir, 'demo.js');
+					console.log(targetPath);
+				});
+				done();
 			});
 		}
 	);
 
-	// process.stdin.on('pause', function(){
-	// 	var rl = $readline.createInterface({
-	// 		input: process.stdin,
-	// 		output: process.stdout
-	// 	});
-
-	// 	rl.on('line', function(line){
-	// 		rl.write('my log');
-	// 	});
-
-	// });
-
-	grunt.registerTask('svn-test-svnCommit-ask', [
-		'svnConfig',
-		'svnCommit:test_log_from_ask'
-	]);
-
 	grunt.registerTask('svn-test-svnCommit', [
 		'svnConfig',
 		'svn-test-svnCommit-prepare',
-		// 'svnCommit',
+		'svnCommit',
 		// 'nodeunit:svnCommit'
 	]);
 
 	// Get test result step by step.
 	grunt.registerTask('test', [
-		'jshint',
-		'svn-test-svnConfig',
-		'svn-test-svnInit',
-		'svn-test-svnCheckout',
+		// 'jshint',
+		// 'svn-test-svnConfig',
+		// 'svn-test-svnInit',
+		// 'svn-test-svnCheckout',
 		'svn-test-svnCommit'
 	]);
 
+	grunt.registerTask(
+		'svn-test-spawn', 
+		'svn-test-spawn',
+		function(){
+			var done = this.async();
+
+			var sp = grunt.util.spawn({
+				cmd : 'grunt',
+				grunt : true,
+				args : ['test']
+			}, function(error, result, code){
+				done();
+			});
+
+			sp.stdout.on('data', function(data){
+				var msg = data.toString().trim();
+				console.log('> ' + msg);
+				if(msg.indexOf('Input the log message for') >= 0){
+					sp.stdin.write(timeStamp + '_ask\n');
+				}
+				if(msg.indexOf('assertions failed') >= 0){
+					grunt.config.set('testResult', false);
+				}
+			});
+		}
+	);
+
 	// By default, lint and run all tests.
 	grunt.registerTask('default', [
-		'test'
+		'svn-test-spawn',
+		'nodeunit:grunt'
 	]);
 
 };

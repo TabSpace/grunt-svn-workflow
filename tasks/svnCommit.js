@@ -7,6 +7,8 @@ var $askFor = require('ask-for');
 
 module.exports = function(grunt){
 
+	var $async = grunt.util.async;
+
 	grunt.registerMultiTask(
 		'svnCommit',
 		'Commit files',
@@ -45,37 +47,25 @@ module.exports = function(grunt){
 				strLog = 'Auto commit by task svnCommit:' + target;
 			}
 
+			var jobs = [];
+
 			if(getLogMode === 'ask'){
-				var question = 'Input the log message for task svnCommit:' + target + '\n';
-				
-				$askFor([question], function(spec) {
-					strLog = spec[question];
-					console.log('strLog:', strLog);
-					done();
+				jobs.push(function(callback){
+					var question = 'Input the log message for task svnCommit:' + target + '\n';
+					$askFor([question], function(spec) {
+						strLog = spec[question];
+						callback();
+					});
 				});
-
-
-				// process.stdin.write('my log\n');
-				// process.stdin.read('my log');
-				// process.stdin.resume();
-
-				
-				// process.stdin.pause();
-				// process.stdin.resume();
-				// process.stdout.write('end\n');
-
-
-
 			}else if(getLogMode === 'svn'){
-				var regResult = reg.exec(data.log);
-				var targetSvnPath = regResult ? regResult[1] || '' : '' ;
-				targetSvnPath = $tools.join(options.repository, targetSvnPath);
+				jobs.push(function(callback){
+					var regResult = reg.exec(data.log);
+					var targetSvnPath = regResult ? regResult[1] || '' : '' ;
+					targetSvnPath = $tools.join(options.repository, targetSvnPath);
 
-				console.log('strLog:', targetSvnPath);
-				done();
-			}else{
-				console.log('strLog:', strLog);
-				done();
+					console.log('strLog:', targetSvnPath);
+					callback();
+				});
 			}
 
 			// var srcPath = $path.join(conf.cwd, data.src);
@@ -227,10 +217,10 @@ module.exports = function(grunt){
 			// }
 			// jobs.push(doCommit);
 
-			// $async.series(jobs, function(){
-			// 	grunt.log.ok('commit : %s complete!', srcPath);
-			// 	done();
-			// });
+			$async.series(jobs, function(){
+				grunt.log.ok('commit', srcPath ,'complete!');
+				done();
+			});
 
 		}
 	);
