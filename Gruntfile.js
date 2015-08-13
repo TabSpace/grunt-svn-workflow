@@ -222,9 +222,9 @@ module.exports = function(grunt) {
 				cmd : 'svn',
 				args : ['checkout', svnPath, srcPath]
 			}, function(error, result, code){
-				['ask', 'fn', 'log', 'normal'].forEach(function(dir){
+				['ask', 'fn', 'svn', 'normal'].forEach(function(dir){
 					var targetPath = $path.join(srcPath, dir, 'demo.js');
-					console.log(targetPath);
+					grunt.file.write(targetPath, timeStamp);
 				});
 				done();
 			});
