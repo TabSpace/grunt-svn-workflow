@@ -11,7 +11,7 @@ var $tools = require('./utils/tools');
 
 module.exports = function(grunt) {
 
-	//test account:
+	//test svn account:
 	//id : svn_workflow@sina.cn
 	//password : test123
 
@@ -137,6 +137,7 @@ module.exports = function(grunt) {
 		},
 		testResult : true,
 		nodeunit: {
+			result : ['test/test_result.js'],
 			grunt : ['test/grunt_test.js'],
 			svnConfig: ['test/svnConfig_test.js'],
 			svnInit : ['test/svnInit_test.js'],
@@ -167,7 +168,10 @@ module.exports = function(grunt) {
 
 			grunt.util.spawn({
 				cmd : 'svn',
-				args : ['checkout', svnPath, srcPath]
+				args : ['checkout', svnPath, srcPath],
+				opts : {
+					stdio : 'inherit'
+				}
 			}, function(error, result, code){
 				done();
 			});
@@ -259,14 +263,15 @@ module.exports = function(grunt) {
 	]);
 
 	// Get test result step by step.
-	grunt.registerTask('test', [
+	grunt.registerTask('svn-test', [
 		'jshint',
-		'svn-test-svnConfig-prepare',
 		'svn-test-svnConfig',
-		// 'svn-test-svnInit',
-		// 'svn-test-svnCheckout',
-		// 'svn-test-svnCommit'
+		'svn-test-svnInit',
+		'svn-test-svnCheckout',
+		'svn-test-svnCommit'
 	]);
+
+	var testOutputFile = $path.resolve('./test/test/result.js');
 
 	grunt.registerTask(
 		'svn-test-spawn', 
@@ -277,7 +282,7 @@ module.exports = function(grunt) {
 			var sp = grunt.util.spawn({
 				cmd : 'grunt',
 				grunt : true,
-				args : ['test']
+				args : ['svn-test']
 			}, function(error, result, code){
 				done();
 			});
@@ -287,25 +292,39 @@ module.exports = function(grunt) {
 			sp.stdout.on('data', function(data){
 				var msg = data.toString().trim();
 				console.log('> ' + msg);
+
 				var rs = (/^(\d+)_normal/).exec(data);
 				if(rs && rs[1]){
 					spawnTimeStamp = rs[1];
 				}
+
 				if(msg.indexOf('Input the log message for') >= 0){
 					spawnTimeStamp = spawnTimeStamp || timeStamp;
 					sp.stdin.write(spawnTimeStamp + '_ask\n');
 				}
+
 				if(msg.indexOf('assertions failed') >= 0){
 					grunt.config.set('testResult', false);
+					grunt.file.write(testOutputFile, 'assertions failed');
+				}else{
+					grunt.file.write(testOutputFile, 'assertions passed');
 				}
 			});
 		}
 	);
 
+	grunt.registerTask('test', [
+		'svn-test-svnConfig-prepare',
+		'svn-test-spawn'
+	]);
+
+	grunt.registerTask('test-result', [
+		'nodeunit:result'
+	]);
+
 	// By default, lint and run all tests.
 	grunt.registerTask('default', [
-		'svn-test-spawn',
-		'nodeunit:grunt'
+		'test-result'
 	]);
 
 };
