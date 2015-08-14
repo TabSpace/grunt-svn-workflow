@@ -235,7 +235,7 @@ module.exports = function(grunt) {
 		'svnConfig',
 		'svn-test-svnCommit-prepare',
 		'svnCommit',
-		// 'nodeunit:svnCommit'
+		'nodeunit:svnCommit'
 	]);
 
 	// Get test result step by step.
@@ -261,11 +261,18 @@ module.exports = function(grunt) {
 				done();
 			});
 
+			var spawnTimeStamp = '';
+
 			sp.stdout.on('data', function(data){
 				var msg = data.toString().trim();
 				console.log('> ' + msg);
+				var rs = (/^(\d+)_normal/).exec(data);
+				if(rs && rs[1]){
+					spawnTimeStamp = rs[1];
+				}
 				if(msg.indexOf('Input the log message for') >= 0){
-					sp.stdin.write(timeStamp + '_ask\n');
+					spawnTimeStamp = spawnTimeStamp || timeStamp;
+					sp.stdin.write(spawnTimeStamp + '_ask\n');
 				}
 				if(msg.indexOf('assertions failed') >= 0){
 					grunt.config.set('testResult', false);
