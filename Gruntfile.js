@@ -154,6 +154,26 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
 	//unit test for svnConfig
+	grunt.registerTask(
+		'svn-test-svnConfig-prepare', 
+		'svn-test-svnConfig-prepare',
+		function(){
+			var done = this.async();
+			var srcPath = $path.resolve('./test/test/base/');
+			var svnPath = $tools.join(
+				grunt.config.get('svnConfig.project'),
+				'test/base'
+			);
+
+			grunt.util.spawn({
+				cmd : 'svn',
+				args : ['checkout', svnPath, srcPath]
+			}, function(error, result, code){
+				done();
+			});
+		}
+	);
+
 	grunt.registerTask('svn-test-svnConfig', [
 		'svnConfig',
 		'nodeunit:svnConfig'
@@ -240,11 +260,12 @@ module.exports = function(grunt) {
 
 	// Get test result step by step.
 	grunt.registerTask('test', [
-		// 'jshint',
-		// 'svn-test-svnConfig',
+		'jshint',
+		'svn-test-svnConfig-prepare',
+		'svn-test-svnConfig',
 		// 'svn-test-svnInit',
 		// 'svn-test-svnCheckout',
-		'svn-test-svnCommit'
+		// 'svn-test-svnCommit'
 	]);
 
 	grunt.registerTask(
