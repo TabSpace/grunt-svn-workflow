@@ -1,6 +1,3 @@
-var $fs = require('fs');
-var $path = require('path');
-var $readline = require('readline');
 var $tools = require('../utils/tools');
 var $cmdSeries = require('../utils/cmdSeries');
 var $askFor = require('ask-for');
@@ -26,20 +23,23 @@ module.exports = function(grunt){
 
 			this.requires(['svnConfig']);
 
+			var regHttpPrev = (/^http\w*\:\/\//);
+
 			var srcPath = $tools.join(options.cwd, data.src);
-			var svnPath = $tools.join(options.repository, data.svn);
+			var svnPath = regHttpPrev.test(data.svn) ? data.svn : $tools.join(options.repository, data.svn);
 
 			var title = 'task svnCommit' + (target ? ':' + target : '');
 			var strLog = '';
 
 			var getLogMode = '';
-			var reg = (/^\{([^\{\}]+)\}$/);
+			var regBracket = (/^\[([^\[\]]+)\]$/);
+			var regBrace = (/\{([^\{\}]+)\}/);
 			if($tools.type(data.log) === 'function'){
 				strLog = data.log();
 			}else if($tools.type(data.log) === 'string'){
-				if(data.log === '{ask}'){
+				if(regBrace.test(data.log)){
 					getLogMode = 'ask';
-				}else if(reg.test(data.log)){
+				}else if(regBracket.test(data.log)){
 					getLogMode = 'svn';
 				}else{
 					strLog = data.log;
@@ -52,17 +52,21 @@ module.exports = function(grunt){
 
 			if(getLogMode === 'ask'){
 				jobs.push(function(callback){
-					var question = 'Input the log message for task svnCommit:' + target + '\n';
+					var question = data.question || 'Input the log message for task svnCommit:' + target + '\n';
 					$askFor([question], function(spec) {
-						strLog = spec[question];
+						strLog = $tools.substitute(data.log, {
+							ask : spec[question]
+						});
 						callback();
 					});
 				});
 			}else if(getLogMode === 'svn'){
 				jobs.push(function(callback){
-					var regResult = reg.exec(data.log);
+					var regResult = regBracket.exec(data.log);
 					var logSvnPath = regResult ? regResult[1] || '' : '' ;
-					logSvnPath = $tools.join(options.repository, logSvnPath);
+					if(!regHttpPrev.test(logSvnPath)){
+						logSvnPath = $tools.join(options.repository, logSvnPath);
+					}
 					grunt.log.writeln('Get logs from', logSvnPath);
 
 					var info = {};

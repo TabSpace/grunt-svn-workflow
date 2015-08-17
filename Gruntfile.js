@@ -107,32 +107,45 @@ module.exports = function(grunt) {
 				src : 'test/commit/fn'
 			},
 			test_log_from_svn : {
-				// 如果用大括号包裹，可以提供一个相对于 svn 跟路径的相对路径
+				// 如果用中括号包裹，可以提供一个相对于 svn 跟路径的相对路径
 				// 该目标 svn 路径的日志将会被复制作为提交日志
-				// 仅复制大于提交 svn 路径版本号的日志
-				log : '{commit/fn}',
+				// 如果地址不是绝对路径，则自动根据 repository 属性计算 svn 路径
+				// 仅复制大于提交 svn 路径当前版本号的日志
+				log : '[commit/fn]',
 				svn : 'commit/svn',
 				src : 'test/commit/svn'
 			},
 			test_log_from_ask : {
-				// 如果希望手工填入日志，设置 log 为 {ask}
-				log : '{ask}',
+				// 如果希望手工填入日志，log 属性中需要存在 {ask}
+				question : 'Input the custom log for svnCommit:test_log_from_ask',
+				log : '<%=timeStamp%>_{ask}',
 				svn : 'commit/ask',
 				src : 'test/commit/ask'
 			}
 		},
-		svnTag : {
+		svnCopy : {
 			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
+				repository: '<%=svnConfig.test%>'
 			},
-			common : {
-				dev : 'tools/temp/trunk',
-				devSvn : 'dev/trunk',
-				devTag : 'dev/tags',
-				online : 'tools/temp/online',
-				onlineSvn : 'online/trunk',
-				onlineTag : 'online/tags'
+			test_normal : {
+				from : 'commit/normal',
+				to : 'copy'
+			},
+			test_revision : {
+				from : 'commit/normal',
+				to : 'copy',
+				rename : 'revision'
+			},
+			test_tpl : {
+				from : 'commit/normal',
+				to : 'copy',
+				rename : '<%=timeStamp%>_{name}'
+			},
+			test_ask : {
+				from : 'commit/normal',
+				to : 'copy',
+				question : 'Input the branch name:',
+				rename : '<%=timeStamp%>_{ask}'
 			}
 		},
 		testResult : true,
@@ -143,6 +156,7 @@ module.exports = function(grunt) {
 			svnInit : ['test/svnInit_test.js'],
 			svnCheckout : ['test/svnCheckout_test.js'],
 			svnCommit : ['test/svnCommit_test.js'],
+			svnCopy : ['test/svnCopy_test.js'],
 			svnTag : ['test/svnTag_test.js']
 		}
 	});
@@ -262,13 +276,30 @@ module.exports = function(grunt) {
 		'nodeunit:svnCommit'
 	]);
 
+	//unit test for svnCopy
+	grunt.registerTask(
+		'svn-test-svnCopy-prepare', 
+		'svn-test-svnCopy-prepare',
+		function(){
+
+		}
+	);
+
+	grunt.registerTask('svn-test-svnCopy', [
+		'svnConfig',
+		'svn-test-svnCopy-prepare',
+		'svnCopy',
+		'nodeunit:svnCopy'
+	]);
+
 	// Get test result step by step.
 	grunt.registerTask('svn-test', [
-		'jshint',
-		'svn-test-svnConfig',
-		'svn-test-svnInit',
-		'svn-test-svnCheckout',
-		'svn-test-svnCommit'
+		// 'jshint',
+		// 'svn-test-svnConfig',
+		// 'svn-test-svnInit',
+		// 'svn-test-svnCheckout',
+		'svn-test-svnCommit',
+		// 'svn-test-svnCopy'
 	]);
 
 	var testOutputFile = $path.resolve('./test/test/result.js');
@@ -298,7 +329,7 @@ module.exports = function(grunt) {
 					spawnTimeStamp = rs[1];
 				}
 
-				if(msg.indexOf('Input the log message for') >= 0){
+				if(msg.indexOf('Input the custom log for svnCommit:test_log_from_ask') >= 0){
 					spawnTimeStamp = spawnTimeStamp || timeStamp;
 					sp.stdin.write(spawnTimeStamp + '_ask\n');
 				}

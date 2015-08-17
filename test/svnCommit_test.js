@@ -46,6 +46,8 @@ exports.svnCommit = function(test){
 
 				if(name === 'svn'){
 					expect = timeStamp + '_fn';
+				}else if(name === 'ask'){
+					expect = timeStamp + '_' + timeStamp + '_ask';
 				}else{
 					expect = timeStamp + '_' + name;
 				}
