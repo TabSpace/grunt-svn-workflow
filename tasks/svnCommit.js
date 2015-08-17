@@ -164,7 +164,7 @@ module.exports = function(grunt){
 					}
 				});
 
-				grunt.log.writeln('The commit log is:');
+				grunt.log.writeln('svn commit -m\n');
 				grunt.log.writeln(strLog);
 
 				$cmdSeries(grunt, commands, {

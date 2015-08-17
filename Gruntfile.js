@@ -131,15 +131,15 @@ module.exports = function(grunt) {
 				from : 'commit/normal',
 				to : 'copy'
 			},
-			test_revision : {
+			test_rename : {
 				from : 'commit/normal',
 				to : 'copy',
-				rename : 'revision'
+				rename : '<%=timeStamp%>_rename'
 			},
 			test_tpl : {
 				from : 'commit/normal',
 				to : 'copy',
-				rename : '<%=timeStamp%>_{name}'
+				rename : '<%=timeStamp%>_{name}_{revision}'
 			},
 			test_ask : {
 				from : 'commit/normal',
@@ -281,7 +281,20 @@ module.exports = function(grunt) {
 		'svn-test-svnCopy-prepare', 
 		'svn-test-svnCopy-prepare',
 		function(){
-
+			var done = this.async();
+			var path = 'test/copy';
+			var svnPath = grunt.config.get('svnConfig.project') + 'test/copy';
+			grunt.log.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
+			grunt.util.spawn({
+				cmd: 'svn',
+				args: ['delete', svnPath, '-m', '"delete ' + path + '"'],
+				opts : {
+					stdio : 'inherit'
+				}
+			}, function(err, result, code){
+				grunt.log.ok('The svn path: "' + svnPath + '" has been deleted!');
+				done();
+			});
 		}
 	);
 
@@ -298,8 +311,8 @@ module.exports = function(grunt) {
 		// 'svn-test-svnConfig',
 		// 'svn-test-svnInit',
 		// 'svn-test-svnCheckout',
-		'svn-test-svnCommit',
-		// 'svn-test-svnCopy'
+		// 'svn-test-svnCommit',
+		'svn-test-svnCopy'
 	]);
 
 	var testOutputFile = $path.resolve('./test/test/result.js');
@@ -318,20 +331,35 @@ module.exports = function(grunt) {
 				done();
 			});
 
-			var spawnTimeStamp = '';
+			var spawnTSCommit = '';
+			var spawnTSCopy = '';
 
 			sp.stdout.on('data', function(data){
 				var msg = data.toString().trim();
 				console.log('> ' + msg);
 
-				var rs = (/^(\d+)_normal/).exec(data);
-				if(rs && rs[1]){
-					spawnTimeStamp = rs[1];
-				}
+				(function(){
+					var rs = (/^(\d+)_normal/).exec(data);
+					if(rs && rs[1]){
+						spawnTSCommit = rs[1];
+					}
+				})();
+
+				(function(){
+					var rs = (/(\d+)_rename/).exec(data);
+					if(rs && rs[1]){
+						spawnTSCopy = rs[1];
+					}
+				})();
 
 				if(msg.indexOf('Input the custom log for svnCommit:test_log_from_ask') >= 0){
-					spawnTimeStamp = spawnTimeStamp || timeStamp;
-					sp.stdin.write(spawnTimeStamp + '_ask\n');
+					spawnTSCommit = spawnTSCommit || timeStamp;
+					sp.stdin.write(spawnTSCommit + '_ask\n');
+				}
+
+				if(msg.indexOf('Input the branch name:') >= 0){
+					spawnTSCopy = spawnTSCopy || timeStamp;
+					sp.stdin.write(spawnTSCopy + '_ask\n');
 				}
 
 				if(msg.indexOf('assertions failed') >= 0){
