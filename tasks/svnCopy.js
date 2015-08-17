@@ -112,7 +112,7 @@ module.exports = function(grunt){
 								revision = vRegResult[1];
 							}
 							if(revision){
-								grunt.log.writeln('Prev revision is ' + revision);
+								grunt.log.writeln('svnCopy:prev revision is ' + revision);
 								info.revision = revision;
 							}else{
 								grunt.fatal('Can not get prev revision');
@@ -143,32 +143,42 @@ module.exports = function(grunt){
 
 			});
 
-			var braceResults = (function(){
-				var results = [];
-				var result;
-				while((result = regBrace.exec(data.rename)) && result[1]){
-					results.push(result[1]);
-				}
-				return results;
-			})();
+			if($tools.type(data.rename) === 'string'){
+				(function(){
+					var braceResults = [];
+					var result;
+					while((result = regBrace.exec(data.rename)) && result[1]){
+						braceResults.push(result[1]);
+					}
 
-			if(braceResults.indexOf('ask') >= 0){
-				jobs.push(function(callback){
-					var question = data.question || 'Input message for task svnCopy:' + target + '\n';
-					$askFor([question], function(spec) {
-						info.ask = spec[question];
-						callback();
-					});
-				});
+					if(braceResults.indexOf('ask') >= 0){
+						jobs.push(function(callback){
+							var question = data.question || 'Input message for task svnCopy:' + target + '\n';
+							$askFor([question], function(spec) {
+								info.ask = spec[question];
+								callback();
+							});
+						});
+					}
+				})();
 			}
 
 			jobs.push(function(callback){
 				var strLog = copyLogs.join('\n');
+				if($tools.type(rename) === 'function'){
+					rename = rename(info);
+				}
+
+				if($tools.type(rename) !== 'string'){
+					rename = '';
+				}
+
 				if(!rename){
 					rename = info.revision;
 				}else{
 					rename = $tools.substitute(rename, info);
 				}
+
 				grunt.log.writeln('Rename the copy folder:');
 				grunt.log.writeln(rename);
 

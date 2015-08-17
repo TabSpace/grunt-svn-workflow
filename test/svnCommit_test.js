@@ -44,8 +44,8 @@ exports.svnCommit = function(test){
 				log = log || '';
 				log = log.replace(/\r\n/g, '\n');
 
-				if(name === 'svn'){
-					expect = timeStamp + '_fn';
+				if(name === 'svn' || name === 'fn'){
+					expect = 'svncommit_timestamp_' + timeStamp + '_fn';
 				}else if(name === 'ask'){
 					expect = timeStamp + '_' + timeStamp + '_ask';
 				}else{

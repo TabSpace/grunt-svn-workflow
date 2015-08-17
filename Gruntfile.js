@@ -101,7 +101,7 @@ module.exports = function(grunt) {
 			test_log_from_fn : {
 				// 提交问件时填充的日志可以是一个函数的返回值
 				log : function(){
-					return timeStamp + '_fn';
+					return 'svncommit_timestamp_' + timeStamp + '_fn';
 				},
 				svn : 'commit/fn',
 				src : 'test/commit/fn'
@@ -131,10 +131,13 @@ module.exports = function(grunt) {
 				from : 'commit/normal',
 				to : 'copy'
 			},
-			test_rename : {
+			test_fn : {
 				from : 'commit/normal',
 				to : 'copy',
-				rename : '<%=timeStamp%>_rename'
+				rename : function(info){
+					console.log('svnCopy:test_fn rename fn get para:', info);
+					return 'svncopy_timestamp_' + timeStamp + '_fn';
+				}
 			},
 			test_tpl : {
 				from : 'commit/normal',
@@ -311,8 +314,8 @@ module.exports = function(grunt) {
 		// 'svn-test-svnConfig',
 		// 'svn-test-svnInit',
 		// 'svn-test-svnCheckout',
-		// 'svn-test-svnCommit',
-		'svn-test-svnCopy'
+		'svn-test-svnCommit',
+		// 'svn-test-svnCopy'
 	]);
 
 	var testOutputFile = $path.resolve('./test/test/result.js');
@@ -339,16 +342,26 @@ module.exports = function(grunt) {
 				console.log('> ' + msg);
 
 				(function(){
-					var rs = (/^(\d+)_normal/).exec(data);
+					var rs = (/svncommit_timestamp_(\d+)_fn/).exec(msg);
 					if(rs && rs[1]){
 						spawnTSCommit = rs[1];
+						spawnTSCopy = rs[1];
 					}
 				})();
 
 				(function(){
-					var rs = (/(\d+)_rename/).exec(data);
+					var rs = (/svncopy_timestamp_(\d+)_fn/).exec(msg);
 					if(rs && rs[1]){
 						spawnTSCopy = rs[1];
+					}
+				})();
+
+				(function(){
+					var regRevision = (/^svnCopy\:prev\s+revision\s+is\s+(\d+)$/i);
+					var rs = regRevision.exec(msg);
+					if(rs && rs[1]){
+						var outputFile = $path.resolve('./test/test/copy_revision.js');
+						grunt.file.write(outputFile, rs[1]);
 					}
 				})();
 

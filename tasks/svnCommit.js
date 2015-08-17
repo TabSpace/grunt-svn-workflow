@@ -92,7 +92,7 @@ module.exports = function(grunt){
 								prevVersion = vRegResult[1];
 							}
 							if(prevVersion){
-								grunt.log.writeln('Prev revision is ' + prevVersion);
+								grunt.log.writeln('svnCommit:prev revision is ' + prevVersion);
 							}else{
 								grunt.fatal('Can not get prev version number');
 							}
