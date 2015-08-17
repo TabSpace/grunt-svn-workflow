@@ -1,6 +1,6 @@
 {
   "name": "grunt-svn-workflow",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Manage svn folders.",
   "author": "Tony Liang <pillar0514@gmail.com>",
   "homepage": "https://github.com/Esoul/grunt-svn-workflow",
@@ -9,7 +9,6 @@
     "url": "git@github.com:Esoul/grunt-svn-workflow.git"
   },
   "dependencies": {
-    "svn-spawn": "0.1.1",
     "ask-for": "0.0.2",
     "easy-spawn": "0.0.2"
   },
@@ -29,7 +28,7 @@
     "workflow"
   ],
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test-result"
   },
   "files": [
     "utils",

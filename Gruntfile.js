@@ -310,12 +310,12 @@ module.exports = function(grunt) {
 
 	// Get test result step by step.
 	grunt.registerTask('svn-test', [
-		// 'jshint',
-		// 'svn-test-svnConfig',
-		// 'svn-test-svnInit',
-		// 'svn-test-svnCheckout',
+		'jshint',
+		'svn-test-svnConfig',
+		'svn-test-svnInit',
+		'svn-test-svnCheckout',
 		'svn-test-svnCommit',
-		// 'svn-test-svnCopy'
+		'svn-test-svnCopy'
 	]);
 
 	var testOutputFile = $path.resolve('./test/test/result.js');
