@@ -39,6 +39,8 @@ module.exports = function(grunt){
 			var data = this.data;
 			var target = this.target;
 
+			var title = 'task svnInit' + (target ? ':' + target : '');
+
 			var options = Object.keys(conf).reduce(function(obj, key){
 				obj[key] = data[key] || conf[key] || '';
 				return obj;
@@ -75,7 +77,7 @@ module.exports = function(grunt){
 						args : ['Create files for ' + json.url]
 					};
 				}else{
-					grunt.log.writeln('Auto create svn path', svnPath);
+					grunt.verbose.writeln('Auto create svn path', svnPath);
 					cmd.cmd = 'svn';
 					cmd.args = [
 						'mkdir',
@@ -121,12 +123,12 @@ module.exports = function(grunt){
 
 				var pathes = getMapPathes(data.map);
 				pathes.forEach(function(localPath){
-					grunt.log.writeln('mkdir:', localPath);
+					grunt.verbose.writeln('mkdir:', localPath);
 					localPath = $tools.join(tempPath, localPath);
 					grunt.file.mkdir(localPath);
 				});
 
-				grunt.log.writeln('Create', pathes.length, 'folders.');
+				grunt.verbose.writeln('Create', pathes.length, 'folders.');
 
 				var cmd = {
 					cmd : 'svn',
@@ -164,8 +166,8 @@ module.exports = function(grunt){
 
 			$cmdSeries(grunt, commands, {
 				complete : function(error, result, code){
-					var detail = 'task svnInit' + (target ? ':' + target : '');
-					grunt.log.ok(detail, 'completed.');
+					grunt.log.ok(title, 'completed.');
+					grunt.log.writeln('');
 					done();
 				}
 			});

@@ -67,7 +67,7 @@ module.exports = function(grunt){
 					if(!regHttpPrev.test(logSvnPath)){
 						logSvnPath = $tools.join(options.repository, logSvnPath);
 					}
-					grunt.log.writeln('Get logs from', logSvnPath);
+					grunt.verbose.writeln('Get logs from', logSvnPath);
 
 					var info = {};
 					var commands = [];
@@ -88,7 +88,7 @@ module.exports = function(grunt){
 							prevVersion = vRegResult[1];
 						}
 						if(prevVersion){
-							grunt.log.writeln('svnCommit:prev revision is ' + prevVersion);
+							grunt.log.writeln(title, 'previous revision is', prevVersion);
 						}else{
 							grunt.fatal('Can not get prev version number');
 						}
@@ -153,6 +153,8 @@ module.exports = function(grunt){
 					}
 				});
 
+				grunt.log.writeln('svn', 'commit', '-m', '\n' + strLog);
+
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
 						callback();
@@ -162,6 +164,7 @@ module.exports = function(grunt){
 
 			$async.series(jobs, function(){
 				grunt.log.ok(title, 'completed.');
+				grunt.log.writeln('');
 				done();
 			});
 

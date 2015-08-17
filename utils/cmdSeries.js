@@ -78,7 +78,7 @@ var cmdSeries = function(grunt, cmds, options){
 			}, spOptions);
 
 			if(!spOptions.cmd){
-				grunt.log.writeln('cmd is empty.');
+				grunt.verbose.writeln('cmd is empty.');
 				callback(null, {});
 			}
 
@@ -95,14 +95,14 @@ var cmdSeries = function(grunt, cmds, options){
 				strcmd = strcmd + ' ' + args.join(' ');
 			}
 
-			grunt.log.writeln('');
-			grunt.log.writeln(strcmd);
+			grunt.verbose.writeln('');
+			grunt.verbose.writeln(strcmd);
 			grunt.util.spawn(spOptions, function(error, result, code){
 				if (error && spOptions.autoExecError){
-					grunt.log.errorlns(error).error();
+					grunt.verbose.errorlns(error).error();
 					grunt.fatal([strcmd, 'error'].join(' '));
 				}else{
-					grunt.log.ok();
+					grunt.verbose.ok();
 				}
 
 				if($tools.type(spOptions.done) === 'function'){

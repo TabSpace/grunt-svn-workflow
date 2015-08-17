@@ -13,11 +13,15 @@ module.exports = function(grunt){
 			var data = this.data;
 			var target = this.target;
 
+			var title = 'task svnConfig' + (target ? ':' + target : '');
+
 			var from = '';
 			var to = '';
 
 			var ok = function(url){
-				grunt.log.ok('Get repository url of svnConfig:' + target + ' : ' + url);
+				grunt.verbose.ok('Get repository url of svnConfig:' + target + ' : ' + url);
+				grunt.log.ok(title, 'completed.');
+				grunt.log.writeln('');
 				done();
 			};
 
@@ -34,7 +38,7 @@ module.exports = function(grunt){
 				from = process.env.PWD;
 			}
 
-			grunt.log.writeln('Get repository url from : ', from);
+			grunt.verbose.writeln('Get repository url from : ', from);
 
 			// from 为本地 svn 文件夹路径
 			// 用 svn info 命令获取其 svn 地址，再和 to 选项一起计算目标 svn 路径

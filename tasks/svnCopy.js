@@ -89,8 +89,8 @@ module.exports = function(grunt){
 							args : ['Check svn path exists.']
 						};
 					}else{
-						grunt.log.writeln('The svn path', pathTo, 'not exist. ');
-						grunt.log.writeln('Auto create svn path', pathTo, '.');
+						grunt.verbose.writeln('The svn path', pathTo, 'not exist. ');
+						grunt.verbose.writeln('Auto create svn path', pathTo, '.');
 						cmd.cmd = 'svn';
 						cmd.args = [
 							'mkdir',
@@ -121,7 +121,7 @@ module.exports = function(grunt){
 						// Get revision
 						var revision = getRevision(result.stdout);
 						if(revision){
-							grunt.log.writeln('svnCopy:prev revision is ' + revision);
+							grunt.log.writeln(title, 'previous revision is', revision);
 							info.revision = revision;
 							copyLogs.push('revision : ' + revision);
 						}else{
@@ -141,14 +141,6 @@ module.exports = function(grunt){
 			jobs.push(function(callback){
 
 				var commands = [];
-
-				commands.push({
-					cmd : 'svn',
-					args : ['log', pathTo, '-l', 1],
-					opts : {
-						stdio : 'inherit'
-					}
-				});
 
 				commands.push({
 					cmd : 'svn',
@@ -206,8 +198,8 @@ module.exports = function(grunt){
 
 				copyLogs.push('rename : ' + rename);
 
-				grunt.log.writeln('Rename the copy folder:');
-				grunt.log.writeln(rename);
+				grunt.verbose.writeln('Rename the copy folder:');
+				grunt.verbose.writeln(rename);
 
 				var strLog = copyLogs.join('\n');
 				var commands = [];
@@ -223,6 +215,8 @@ module.exports = function(grunt){
 					}
 				});
 
+				grunt.log.writeln('svn', 'copy', pathFrom, targetPath, '-m', '\n' + strLog);
+
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
 						callback();
@@ -233,6 +227,7 @@ module.exports = function(grunt){
 
 			$async.series(jobs, function(){
 				grunt.log.ok(title, 'completed.');
+				grunt.log.writeln('');
 				done();
 			});
 		}

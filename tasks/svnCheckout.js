@@ -16,6 +16,8 @@ module.exports = function(grunt){
 			var data = this.data;
 			var target = this.target;
 
+			var title = 'task svnCheckout' + (target ? ':' + target : '');
+
 			var options = Object.keys(conf).reduce(function(obj, key){
 				obj[key] = data[key] || conf[key];
 				return obj;
@@ -66,8 +68,8 @@ module.exports = function(grunt){
 
 			$cmdSeries(grunt, commands, {
 				complete : function(error, result, code){
-					var detail = 'task svnCheckout' + (target ? ':' + target : '');
-					grunt.log.ok(detail, 'completed.');
+					grunt.log.ok(title, 'completed.');
+					grunt.log.writeln('');
 					done();
 				}
 			});

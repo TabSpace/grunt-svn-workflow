@@ -135,7 +135,7 @@ module.exports = function(grunt) {
 				from : 'commit/normal',
 				to : 'copy',
 				rename : function(info){
-					console.log('svnCopy:test_fn rename fn get para:', info);
+					grunt.verbose.writeln('svnCopy:test_fn rename fn get para:', info);
 					return 'svncopy_timestamp_' + timeStamp + '_fn';
 				}
 			},
@@ -225,7 +225,7 @@ module.exports = function(grunt) {
 			var done = this.async();
 			var path = 'test/svninit';
 			var svnPath = grunt.config.get('svnConfig.project') + 'test/svninit';
-			grunt.log.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
+			grunt.verbose.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
 			grunt.util.spawn({
 				cmd: 'svn',
 				args: ['delete', svnPath, '-m', '"delete ' + path + '"'],
@@ -233,7 +233,7 @@ module.exports = function(grunt) {
 					stdio : 'inherit'
 				}
 			}, function(err, result, code){
-				grunt.log.writeln('The svn path: "' + svnPath + '" has been deleted!');
+				grunt.verbose.writeln('The svn path: "' + svnPath + '" has been deleted!');
 				done();
 			});
 		}
@@ -287,7 +287,7 @@ module.exports = function(grunt) {
 			var done = this.async();
 			var path = 'test/copy';
 			var svnPath = grunt.config.get('svnConfig.project') + 'test/copy';
-			grunt.log.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
+			grunt.verbose.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
 			grunt.util.spawn({
 				cmd: 'svn',
 				args: ['delete', svnPath, '-m', '"delete ' + path + '"'],
@@ -295,7 +295,7 @@ module.exports = function(grunt) {
 					stdio : 'inherit'
 				}
 			}, function(err, result, code){
-				grunt.log.writeln('The svn path: "' + svnPath + '" has been deleted!');
+				grunt.verbose.writeln('The svn path: "' + svnPath + '" has been deleted!');
 				done();
 			});
 		}
@@ -357,7 +357,7 @@ module.exports = function(grunt) {
 				})();
 
 				(function(){
-					var regRevision = (/^svnCopy\:prev\s+revision\s+is\s+(\d+)$/i);
+					var regRevision = (/^task\ssvnCopy\:test_fn\sprevious\s+revision\s+is\s+(\d+)$/i);
 					var rs = regRevision.exec(msg);
 					if(rs && rs[1]){
 						var outputFile = $path.resolve('./test/test/copy_revision.js');
