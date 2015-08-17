@@ -6,6 +6,28 @@ module.exports = function(grunt){
 
 	var $async = grunt.util.async;
 
+	var getRevision = function(xml){
+		var revision = '';
+		var vRegResult = (/revision="(\d+)"/).exec(xml);
+		if(vRegResult && vRegResult[1]){
+			revision = vRegResult[1];
+		}
+		return revision;
+	};
+
+	var getLog = function(xml){
+		var log = '';
+		var logReg = (/<msg>([\w\W]*?)<\/msg>/g);
+		var logRegResult = logReg.exec(xml);
+		if(logRegResult && logRegResult[1]){
+			log = logRegResult[1];
+		}
+		if(log){
+			log = log.replace(/\r\n/g, '\n');
+		}
+		return log;
+	};
+
 	grunt.registerMultiTask(
 		'svnCopy',
 		'Copy svn folders',
@@ -29,7 +51,7 @@ module.exports = function(grunt){
 			var pathTo = regHttpPrev.test(data.to) ? data.to : $tools.join(options.repository, data.to);
 
 			var copyLogs = [];
-			copyLogs.push('Copy from ' + pathFrom);
+			copyLogs.push('copyfrom : ' + pathFrom);
 			
 			var folderName = pathFrom.split(/[\/\\]+/).pop();
 			var rename = data.rename || '';
@@ -45,7 +67,8 @@ module.exports = function(grunt){
 
 				commands.push({
 					cmd : 'svn',
-					args : ['info', pathTo]
+					args : ['info', pathTo],
+					autoExecError : false
 				});
 
 				// If pathTo not exists, create it
@@ -86,56 +109,58 @@ module.exports = function(grunt){
 
 				// Get log from last revision for pathFrom
 				commands.push(function(error, result, code){
-					if(error){
-						grunt.log.errorlns(error).error();
-						grunt.fatal([title, 'get svn path', pathTo, 'error!'].join(' '));
-					}else{
-						grunt.log.writeln('Get log from', pathFrom);
-					}
 					return {
 						cmd : 'svn',
 						args : ['log', pathFrom, '-l', '1', '--xml']
 					};
 				});
 
-				// Get log and revision from CLI
+				// Get pathFrom log and revision from CLI
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
-						if(error){
-							grunt.log.errorlns(error).error();
-							grunt.fatal([title, 'get prev revision error!'].join(' '));
-						}else{
-							// Get revision
-							var revision = '';
-							var vRegResult = (/revision="(\d+)"/).exec(result.stdout);
-							if(vRegResult && vRegResult[1]){
-								revision = vRegResult[1];
-							}
-							if(revision){
-								grunt.log.writeln('svnCopy:prev revision is ' + revision);
-								info.revision = revision;
-							}else{
-								grunt.fatal('Can not get prev revision');
-							}
-
+						// Get revision
+						var revision = getRevision(result.stdout);
+						if(revision){
+							grunt.log.writeln('svnCopy:prev revision is ' + revision);
+							info.revision = revision;
 							copyLogs.push('revision : ' + revision);
-
-							// Get log
-							var log = '';
-							var logReg = (/<msg>([\w\W]*?)<\/msg>/g);
-							var logRegResult = logReg.exec(result.stdout);
-							if(logRegResult && logRegResult[1]){
-								log = logRegResult[1];
-							}
-
-							if(log){
-								log = log.replace(/\r\n/g, '\n');
-							}else{
-								log = 'Copy by ' + title;
-							}
-
-							copyLogs.push(log);
+						}else{
+							grunt.fatal('Can not get pathFrom revision');
 						}
+
+						// Get log
+						var log = getLog(result.stdout) || 'Copy by ' + title;
+						copyLogs.push('log : ' + log);
+
+						callback();
+					}
+				});
+
+			});
+
+			jobs.push(function(callback){
+
+				var commands = [];
+
+				commands.push({
+					cmd : 'svn',
+					args : ['log', pathTo, '-l', 1],
+					opts : {
+						stdio : 'inherit'
+					}
+				});
+
+				commands.push({
+					cmd : 'svn',
+					args : ['log', pathTo, '-l', 1, '--xml']
+				});
+
+				// Get pathTo log from CLI
+				$cmdSeries(grunt, commands, {
+					complete : function(error, result, code){
+						// Get log
+						var log = getLog(result.stdout);
+						info.lastCopyLog = log;
 
 						callback();
 					}
@@ -164,7 +189,7 @@ module.exports = function(grunt){
 			}
 
 			jobs.push(function(callback){
-				var strLog = copyLogs.join('\n');
+				
 				if($tools.type(rename) === 'function'){
 					rename = rename(info);
 				}
@@ -179,13 +204,15 @@ module.exports = function(grunt){
 					rename = $tools.substitute(rename, info);
 				}
 
+				copyLogs.push('rename : ' + rename);
+
 				grunt.log.writeln('Rename the copy folder:');
 				grunt.log.writeln(rename);
 
+				var strLog = copyLogs.join('\n');
 				var commands = [];
 
 				var targetPath = $tools.join(pathTo, rename);
-				grunt.log.writeln(['svn copy', pathFrom, targetPath].join(' '));
 
 				// Copy svn folder
 				commands.push({
@@ -198,10 +225,6 @@ module.exports = function(grunt){
 
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
-						if(error){
-							grunt.log.errorlns(error).error();
-							grunt.fatal([title, 'copy svn folder error!'].join(' '));
-						}
 						callback();
 					}
 				});

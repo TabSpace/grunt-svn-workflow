@@ -42,6 +42,8 @@ exports.svnConfig = function(test){
 				);
 			};
 
+			cmd.autoExecError = false;
+
 			return cmd;
 		});
 	});

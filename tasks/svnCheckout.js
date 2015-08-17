@@ -61,30 +61,13 @@ module.exports = function(grunt){
 					cmd.args.push('update');
 				}
 
-				cmd.done = function(error, result, code){
-					if (error){
-						grunt.log.errorlns(error).error();
-						grunt.fatal(['svn', motion, svnPath, srcPath, 'error!'].join(' '));
-					}else{
-						grunt.log.ok();
-					}
-				};
-
-				commands.push(function(error, result, code){
-					grunt.log.writeln('svn', motion, svnPath, srcPath);
-					return cmd;
-				});
+				commands.push(cmd);
 			});
 
 			$cmdSeries(grunt, commands, {
 				complete : function(error, result, code){
 					var detail = 'task svnCheckout' + (target ? ':' + target : '');
-					if (error){
-						grunt.log.errorlns(error).error();
-						grunt.fatal([detail, 'error!'].join(' '));
-					}else{
-						grunt.log.ok(detail, 'completed.');
-					}
+					grunt.log.ok(detail, 'completed.');
 					done();
 				}
 			});

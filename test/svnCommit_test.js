@@ -24,7 +24,8 @@ exports.svnCommit = function(test){
 				args : ['log', svnPath, '-l', '1', '--xml'],
 				opts : {
 					cwd : srcPath
-				}
+				},
+				autoExecError : false
 			};
 
 			cmd.done = function(error, result, code){
@@ -58,6 +59,8 @@ exports.svnCommit = function(test){
 					'Should get correct log for ' + name + '.'
 				);
 			};
+
+			cmd.autoExecError = false;
 
 			return cmd;
 		});

@@ -54,7 +54,8 @@ module.exports = function(grunt){
 
 			commands.push({
 				cmd : 'svn',
-				args : ['info', svnPath]
+				args : ['info', svnPath],
+				autoExecError : false
 			});
 
 			commands.push(function(error, result, code){
@@ -113,17 +114,6 @@ module.exports = function(grunt){
 					cmd.args.push('update');
 				}
 
-				cmd.done = function(error, result, code){
-					if (error){
-						grunt.log.errorlns(error).error();
-						grunt.fatal(['svn', motion, svnPath, tempPath, 'error!'].join(' '));
-					}else{
-						grunt.log.ok();
-					}
-				};
-
-				grunt.log.writeln('svn', motion, svnPath, tempPath);
-
 				return cmd;
 			});
 
@@ -166,13 +156,7 @@ module.exports = function(grunt){
 				};
 
 				cmd.done = function(error, result, code){
-					if (error){
-						grunt.log.errorlns(error).error();
-						grunt.fatal(['svnInit:' + target, 'commit error!'].join(' '));
-					}else{
-						grunt.log.writeln('svnInit:' + target, 'commited.').ok();
-						grunt.file.delete(tempPath);
-					}
+					grunt.file.delete(tempPath);
 				};
 
 				return cmd;
@@ -181,12 +165,7 @@ module.exports = function(grunt){
 			$cmdSeries(grunt, commands, {
 				complete : function(error, result, code){
 					var detail = 'task svnInit' + (target ? ':' + target : '');
-					if (error){
-						grunt.log.errorlns(error).error();
-						grunt.fatal([detail, 'error!'].join(' '));
-					}else{
-						grunt.log.ok(detail, 'completed.');
-					}
+					grunt.log.ok(detail, 'completed.');
 					done();
 				}
 			});

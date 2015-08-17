@@ -73,12 +73,38 @@ var cmdSeries = function(grunt, cmds, options){
 				);
 			}
 
-			spOptions = $tools.extend({}, spOptions);
+			spOptions = $tools.extend({
+				autoExecError : true
+			}, spOptions);
+
 			if(!spOptions.cmd){
+				grunt.log.writeln('cmd is empty.');
 				callback(null, {});
 			}
 
+			var strcmd = spOptions.cmd;
+			var args = spOptions.args || [];
+			if(args && args.join && args.map){
+				args = args.map(function(str){
+					str = str + '';
+					if(str.indexOf('\n') >= 0){
+						str = '\n' + str;
+					}
+					return str;
+				});
+				strcmd = strcmd + ' ' + args.join(' ');
+			}
+
+			grunt.log.writeln('');
+			grunt.log.writeln(strcmd);
 			grunt.util.spawn(spOptions, function(error, result, code){
+				if (error && spOptions.autoExecError){
+					grunt.log.errorlns(error).error();
+					grunt.fatal([strcmd, 'error'].join(' '));
+				}else{
+					grunt.log.ok();
+				}
+
 				if($tools.type(spOptions.done) === 'function'){
 					spOptions.done(error, result, code);
 				}
@@ -88,7 +114,7 @@ var cmdSeries = function(grunt, cmds, options){
 					code : code
 				});
 			});
-		}
+		};
 	});
 
 	grunt.util.async.waterfall(commands, function(error, data){

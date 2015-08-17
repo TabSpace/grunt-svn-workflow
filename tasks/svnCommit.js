@@ -82,60 +82,49 @@ module.exports = function(grunt){
 
 					//Get last revision
 					commands.push(function(error, result, code){
-						if(error){
-							grunt.log.errorlns(error).error();
-							grunt.fatal([title, 'get prev version number error!'].join(' '));
-						}else{
-							var prevVersion = '';
-							var vRegResult = (/revision="(\d+)"/).exec(result.stdout);
-							if(vRegResult && vRegResult[1]){
-								prevVersion = vRegResult[1];
-							}
-							if(prevVersion){
-								grunt.log.writeln('svnCommit:prev revision is ' + prevVersion);
-							}else{
-								grunt.fatal('Can not get prev version number');
-							}
-
-							return {
-								cmd : 'svn',
-								args : ['log', logSvnPath, '-r', prevVersion + ':HEAD', '--xml'],
-								opts : {
-									cwd : srcPath
-								}
-							};
+						var prevVersion = '';
+						var vRegResult = (/revision="(\d+)"/).exec(result.stdout);
+						if(vRegResult && vRegResult[1]){
+							prevVersion = vRegResult[1];
 						}
+						if(prevVersion){
+							grunt.log.writeln('svnCommit:prev revision is ' + prevVersion);
+						}else{
+							grunt.fatal('Can not get prev version number');
+						}
+
+						return {
+							cmd : 'svn',
+							args : ['log', logSvnPath, '-r', prevVersion + ':HEAD', '--xml'],
+							opts : {
+								cwd : srcPath
+							}
+						};
 					});
 
 					//Get logs from last revision
 					$cmdSeries(grunt, commands, {
 						complete : function(error, result, code){
-							if (error){
-								grunt.log.errorlns(error).error();
-								grunt.fatal([title, 'get logs error!'].join(' '));
-							}else{
-								var log = '';
-								var logs = [];
-								var logReg = (/<msg>([\w\W]*?)<\/msg>/g);
-								var logRegResult = logReg.exec(result.stdout);
-								while(logRegResult && logRegResult[1]){
-									logs.push(logRegResult[1]);
-									logRegResult = logReg.exec(result.stdout);
-								}
-								if(logs.length){
-									log = logs.join('\n');
-								}
-
-								if(log){
-									log = log.replace(/\r\n/g, '\n');
-								}else{
-									log = 'Auto commit by ' + title;
-								}
-
-								strLog = log;
-								grunt.log.ok(title, 'get logs completed.');
+							var log = '';
+							var logs = [];
+							var logReg = (/<msg>([\w\W]*?)<\/msg>/g);
+							var logRegResult = logReg.exec(result.stdout);
+							while(logRegResult && logRegResult[1]){
+								logs.push(logRegResult[1]);
+								logRegResult = logReg.exec(result.stdout);
 							}
-							
+							if(logs.length){
+								log = logs.join('\n');
+							}
+
+							if(log){
+								log = log.replace(/\r\n/g, '\n');
+							}else{
+								log = 'Auto commit by ' + title;
+							}
+
+							strLog = log;
+	
 							callback();
 						}
 					});
@@ -164,17 +153,8 @@ module.exports = function(grunt){
 					}
 				});
 
-				grunt.log.writeln('svn commit -m\n');
-				grunt.log.writeln(strLog);
-
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
-						if (error){
-							grunt.log.errorlns(error).error();
-							grunt.fatal([title, 'error!'].join(' '));
-						}else{
-							grunt.log.ok('commit', srcPath ,'complete!');
-						}
 						callback();
 					}
 				});

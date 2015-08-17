@@ -17,8 +17,7 @@ module.exports = function(grunt){
 			var to = '';
 
 			var ok = function(url){
-				grunt.log.writeln('Repository url of svnConfig:' + target , ':', url);
-				grunt.log.write('Get svn repository url. ').ok();
+				grunt.log.ok('Get repository url of svnConfig:' + target + ' : ' + url);
 				done();
 			};
 
@@ -31,7 +30,6 @@ module.exports = function(grunt){
 			if($tools.type(data) === 'object'){
 				from = data.from || process.env.PWD;
 				to = data.to || '';
-				console.log(from, to);
 			}else if(!data){
 				from = process.env.PWD;
 			}
@@ -48,25 +46,20 @@ module.exports = function(grunt){
 			], {
 				complete : function(error, result, code){
 					var repositoryUrl = '';
-					if(error){
-						grunt.log.errorlns(error);
-						grunt.fatal('Get svn info failure.');
-					}else{
-						var json = result.stdout.split(/\n/g).reduce(function(obj, str){
-							var index = str.indexOf(':');
-							var key = str.substr(0, index).trim().toLowerCase();
-							var value = str.substr(index + 1).trim();
-							obj[key] = value;
-							return obj;
-						}, {});
+					var json = result.stdout.split(/\n/g).reduce(function(obj, str){
+						var index = str.indexOf(':');
+						var key = str.substr(0, index).trim().toLowerCase();
+						var value = str.substr(index + 1).trim();
+						obj[key] = value;
+						return obj;
+					}, {});
 
-						if(json.url){
-							repositoryUrl = $tools.join(json.url, to);
-							grunt.config.set('svnConfig.' + target, repositoryUrl);
-							ok(repositoryUrl);
-						}else{
-							grunt.fatal('Get svn repository url failure.');
-						}
+					if(json.url){
+						repositoryUrl = $tools.join(json.url, to);
+						grunt.config.set('svnConfig.' + target, repositoryUrl);
+						ok(repositoryUrl);
+					}else{
+						grunt.fatal('Get svn repository url failure.');
 					}
 				}
 			});

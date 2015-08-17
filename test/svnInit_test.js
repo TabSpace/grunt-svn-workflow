@@ -10,7 +10,8 @@ exports.svnInit = function(test){
 
 	$grunt.util.spawn({
 		cmd: 'svn',
-		args: ['info', svnPath]
+		args: ['info', svnPath],
+		autoExecError : false
 	}, function(error, result, code){
 
 		var json = result.stdout.split(/\n/g).reduce(function(obj, str){

@@ -233,7 +233,7 @@ module.exports = function(grunt) {
 					stdio : 'inherit'
 				}
 			}, function(err, result, code){
-				grunt.log.ok('The svn path: "' + svnPath + '" has been deleted!');
+				grunt.log.writeln('The svn path: "' + svnPath + '" has been deleted!');
 				done();
 			});
 		}
@@ -295,7 +295,7 @@ module.exports = function(grunt) {
 					stdio : 'inherit'
 				}
 			}, function(err, result, code){
-				grunt.log.ok('The svn path: "' + svnPath + '" has been deleted!');
+				grunt.log.writeln('The svn path: "' + svnPath + '" has been deleted!');
 				done();
 			});
 		}
@@ -375,7 +375,7 @@ module.exports = function(grunt) {
 					sp.stdin.write(spawnTSCopy + '_ask\n');
 				}
 
-				if(msg.indexOf('assertions failed') >= 0){
+				if(msg.indexOf('assertions failed') >= 0 || msg.indexOf('Fatal error') >= 0){
 					grunt.config.set('testResult', false);
 					grunt.file.write(testOutputFile, 'assertions failed');
 				}else{
