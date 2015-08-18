@@ -183,6 +183,8 @@ module.exports = function(grunt) {
 				'test/base'
 			);
 
+			grunt.file.delete(srcPath);
+
 			grunt.util.spawn({
 				cmd : 'svn',
 				args : ['checkout', svnPath, srcPath],

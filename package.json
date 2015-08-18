@@ -9,13 +9,10 @@
     "url": "git@github.com:Esoul/grunt-svn-workflow.git"
   },
   "dependencies": {
-    "ask-for": "0.0.2",
-    "easy-spawn": "0.0.2"
+    "ask-for": "0.0.2"
   },
   "devDependencies": {
     "grunt": "^0.4.2",
-    "grunt-contrib-copy": "^0.6.0",
-    "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-nodeunit": "^0.4.0"
   },
@@ -33,6 +30,9 @@
   "files": [
     "utils",
     "tasks",
+    "docs",
+    "example/tools",
+    "README.md",
     "LICENSE"
   ],
   "bugs": {

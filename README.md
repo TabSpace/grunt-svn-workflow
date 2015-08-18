@@ -1,93 +1,118 @@
 #grunt-svn-workflow
+
 [![Build Status: Linux](https://travis-ci.org/Esoul/grunt-svn-workflow.svg?branch=master)](https://travis-ci.org/Esoul/grunt-svn-workflow)
 [![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
-
 [![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
-[![pageviews](https://sourcegraph.com/api/repos/github.com/Esoul/grunt-svn-workflow/counters/views.png?no-count)](https://sourcegraph.com/github.com/Esoul/grunt-svn-workflow)
 
->Manage your svn folders.
+>用于实现跨平台的 SVN 操作自动化流程
 
-Help you to improve the automation process.
+帮助改进 SVN 目录操作的自动化流程。
 
-The example give you a simple, clear, maintainable project directory structure.
+example 目录给出了一个基于 SVN 项目的简单管理流程。
 
-The publish task in example will copy your logs to target folders, from previous commit to now.
+发布任务能够从一个 SVN 路径复制从上次打包到当前版本的日志，作为最新发布代码的日志。
 
-You can set a confirm prompt in the task queue.
+在任务队列中可以设置一个提示作为中断任务的选择。
 
 ## For
-For whoever have a JavaScript project on a SVN repository, and want to maintain it properly.
+
+用于管理那些还需要在 SVN 进行管理的项目。
 
 ## Prepare
-Be sure that SVN version >= 1.6 .
 
-Requires SVN CLI, set language as english.
+安装 node, npm 环境。
 
-Create a directory named tools in your project repository path.
+确保 SVN 版本 >= 1.6 。
 
-Create a local directory of your project named `'projectname'`, then checkout the tools directory to `'projectname/tools'`.
+需要安装 SVN CLI, 设置语言版本为 english 。(Tortoise  SVN 安装时提供了同时安装 CLI 的选项)
 
-Put your grunt file and package.json in this directory. like this:
+## Quick Start
 
-![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
+0. 登录 svn 仓库，为你的项目创建一个 svn 目录。
+
+0. 在项目 svn 目录里面创建一个 tools 目录。
+
+0. 在本地建立一个目录，用于部署你的项目。__注意：这个目录不能是 svn 目录。__
+
+0. 将 tools 目录检出到本地项目目录中。
+
+0. 将 example/tools 下的文件复制到你的项目目录中的 tools 文件夹下。
+> 假设你的项目名称为 svn-workflow ，那么你此时的本地项目目录结构如图所示：
+>
+>![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
+
+0. 安装项目依赖的 npm 包，运行：
+> 
+> ```shell
+> npm install -d
+> ```
+
+
 
 ## Getting Started
-This plugin requires Grunt `~0.4.0`
 
-If you haven't used [Grunt](http://gruntjs.com/) before, be sure to check out the [Getting Started](http://gruntjs.com/getting-started) guide, as it explains how to create a [Gruntfile](http://gruntjs.com/sample-gruntfile) as well as install and use Grunt plugins. Once you're familiar with that process, you may install this plugin with this command:
+1. 这个插件要求使用 Grunt `~0.4.0`
+> 如果你还未使用过 [Grunt](http://gruntjs.com/)，请查阅 Grunt 说明：[Getting Started](http://gruntjs.com/getting-started)，这里解释了如何创建一个 [Gruntfile](http://gruntjs.com/sample-gruntfile) 以及如何安装和使用 grunt 插件。当你熟悉了这个流程，用这个命令来安装这个插件：
+> 
+> ```shell
+> npm install grunt-svn-workflow --save-dev
+> ```
 
-```shell
-npm install grunt-svn-workflow --save-dev
-```
+1. 插件安装后，需要用这行 javascript 代码来启用插件：
+> 
+> ```js
+> grunt.loadNpmTasks('grunt-svn-workflow');
+> ```
 
-Once the plugin has been installed, it may be enabled inside your Gruntfile with this line of JavaScript:
+1. 请参考示例文件来配置你的任务文件，也可以直接复制任务配置作为项目模板。
 
-```js
-grunt.loadNpmTasks('grunt-svn-workflow');
-```
 
-Be sure that you have stored the svn password, for now these tasks can't give you a prompt that need the password .
+## svnConfig multitask
+__用于配置 svn 根路径。如果是从本地 svn 路径来获取项目 svn 根路径，则其他任务执行前都需要先执行 `svnConfig` 任务。__
 
-Reference example file to configure your task file, or just copy the configuration.
-
-## svnConfig task
-_Set your svn configs in this task , and put the `svnConfig` task in your svn operation task queue._
-
-#### repository
+#### Task name type: `String`
 Type: `String`
 Default: `''`
 
-The repository url of project. Set it as `'auto'` to let the task get the repository url with `taskDir` option automatically.
+如果不提供选项对象，只填写一个字符串，则此字符串直接作为项目的 svn 根路径。
 
-#### projectDir
-Type: `String`
+__examples__
 
-The local path of the project.
-
-#### taskDir
-Type: `String`
-
-The path of the task directory relative to the repository url of project.
-
-### Usage examples
 ```js
-var path = require('path');
-
-// Project svn tasks configuration.
 grunt.initConfig({
 	svnConfig : {
-		// Project svn repository path.
-		repository : 'auto',
-		// Project deploy path.
-		projectDir : path.resolve(__dirname, '../'),
-		// Project gruntfile directory.
-		taskDir : 'tools'
+		project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/'
 	}
 });
 ```
 
+#### from
+Type: `String`
+
+用于获取 svn 根路径的本地 svn 目录。
+
+#### to
+Type: `String`
+
+最终我们需要定位的 svn 路径与本地目录 svn 路径的相对路径。
+
+### Usage examples
+```js
+var $path = require('path');
+grunt.initConfig({
+	svnConfig : {
+		project : {
+			from : $path.resolve(__dirname, 'test/test/base'),
+			to : '../'
+		}
+	}
+});
+```
+假设本地目录 'test/test/base' 是一个 svn 目录，对应的 svn 目录是
+
+
 ## svnInit task
-_Run this task with the `grunt svnInit` command._
+__Run this task with the `grunt svnInit` command.__
 
 #### options.repository
 Type: `String`
@@ -505,21 +530,12 @@ module.exports = function(grunt) {
 
 ```
 
-## Tips
-
-If you have a error like this:
-
-```shell
-Fatal error: 1801 tag exists ! cancel tag building!
-```
-
-That means there is no change between now and previous commit.
-
 ## Release History
 
- * 2015-04-01   v0.1.2   Add log option for svnCommit task.
- * 2014-12-09   v0.1.1   Fix the bug that tag building will have a error occasionally.
- * 2014-12-04   v0.1.0   First official release for Grunt 0.4.0.
+ * 2015-08-18   v0.2.0   重大更新，移除 svnTag 任务，添加 svnCopy 任务，更新各个任务使用方式
+ * 2015-04-01   v0.1.2   为 svnCommit 任务添加 log 选项
+ * 2014-12-09   v0.1.1   解决任务执行时会发生偶然的报错的问题
+ * 2014-12-04   v0.1.0   发布第一个正式版本，基于Grunt 0.4.0
 
 
 

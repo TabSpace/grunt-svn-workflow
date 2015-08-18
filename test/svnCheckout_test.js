@@ -18,6 +18,9 @@ exports.svnCheckout = function(test){
 		'Checkouted file should is same as online file. '
 	);
 
+	var folderPath = $path.resolve('./test/test/checkout/');
+	$grunt.file.delete(folderPath);
+
 	test.done();
 };
 
