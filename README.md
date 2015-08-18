@@ -87,60 +87,61 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 ## svnConfig multitask
 
-__用于配置 svn 根路径。如果是从本地 svn 路径来获取项目 svn 根路径，则其他任务执行前都需要先执行 `svnConfig` 任务。__
-
-__examples__
-
-```js
-grunt.registerTask('deploy', [
-    'svnConfig',
-    'svnCheckout:deploy'
-]);
-```
-
-#### Task name type: `String`
-Type: `String`
-Default: `''`
-
-如果不提供选项对象，只填写一个字符串，则此字符串直接作为项目的 svn 根路径。
-
-__examples__
-
-```js
-grunt.initConfig({
-    svnConfig : {
-        project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/'
-    }
-});
-```
-
-#### from
-Type: `String`
-
-用于获取 svn 根路径的本地 svn 目录。
-
-#### to
-Type: `String`
-
-最终我们需要定位的 svn 路径与本地目录 svn 路径的相对路径。
-
-### Usage examples
-```js
-var path = require('path');
-grunt.initConfig({
-    svnConfig : {
-        project : {
-            from : path.resolve(__dirname, 'test/test/base'),
-            to : '../'
-        }
-    }
-});
-```
-假设本地目录 'test/test/base' 是一个 svn 目录，对应的 svn 目录是 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/base"。
-
-任务 svnConfig:project 执行后，获取到线上 svn 目录地址作为项目 svn 根目录地址：
-
-grunt.config.get('svnConfig.project') === "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/"。
+> __用于配置 svn 根路径。如果是从本地 svn 路径来获取项目 svn 根路径，则其他任务执行前都需要先执行 `svnConfig` 任务。__
+> 
+> __examples__
+> 
+> ```js
+> grunt.registerTask('deploy', [
+>     'svnConfig',
+>     'svnCheckout:deploy'
+> ]);
+> ```
+> 
+> #### Task name type: `String`
+> Type: `String`
+> Default: `''`
+> 
+> 如果不提供选项对象，只填写一个字符串，则此字符串直接作为项目的 svn 根路径。
+> 
+> __examples__
+> 
+> ```js
+> grunt.initConfig({
+>     svnConfig : {
+>         project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/'
+>     }
+> });
+> ```
+> 
+> #### from
+> Type: `String`
+> 
+> 用于获取 svn 根路径的本地 svn 目录。
+> 
+> #### to
+> Type: `String`
+> 
+> 最终我们需要定位的 svn 路径与本地目录 svn 路径的相对路径。
+> 
+> #### svnConfig usage examples
+> ```js
+> var path = require('path');
+> grunt.initConfig({
+>     svnConfig : {
+>         project : {
+>             from : path.resolve(__dirname, 'test/test/base'),
+>             to : '../'
+>         }
+>     }
+> });
+> ```
+> 
+> 假设本地目录 'test/test/base' 是一个 svn 目录，对应的 svn 目录是 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/base"。
+> 
+> 任务 svnConfig:project 执行后，获取到线上 svn 目录地址作为项目 svn 根目录地址：
+> 
+> grunt.config.get('svnConfig.project') === "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/"。
 
 ## svnInit multitask
 
