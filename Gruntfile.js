@@ -375,11 +375,11 @@ module.exports = function(grunt) {
 					sp.stdin.write(spawnTSCopy + '_ask\n');
 				}
 
+				grunt.file.write(testOutputFile, 'assertions passed');
+
 				if(msg.indexOf('assertions failed') >= 0 || msg.indexOf('Fatal error') >= 0){
 					grunt.config.set('testResult', false);
 					grunt.file.write(testOutputFile, 'assertions failed');
-				}else{
-					grunt.file.write(testOutputFile, 'assertions passed');
 				}
 			});
 		}
