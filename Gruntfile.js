@@ -107,7 +107,7 @@ module.exports = function(grunt) {
 				src : 'test/commit/fn'
 			},
 			test_log_from_svn : {
-				// 如果用中括号包裹，可以提供一个相对于 svn 跟路径的相对路径
+				// 如果用中括号包裹，可以提供一个相对于 svn 根路径的相对路径
 				// 该目标 svn 路径的日志将会被复制作为提交日志
 				// 如果地址不是绝对路径，则自动根据 repository 属性计算 svn 路径
 				// 仅复制大于提交 svn 路径当前版本号的日志
@@ -116,7 +116,7 @@ module.exports = function(grunt) {
 				src : 'test/commit/svn'
 			},
 			test_log_from_ask : {
-				// 如果希望手工填入日志，log 属性中需要存在 {ask}
+				// 如果希望人工填入日志，log 属性中需要存在 {ask}
 				question : 'Input the custom log for svnCommit:test_log_from_ask',
 				log : '<%=timeStamp%>_{ask}',
 				svn : 'commit/ask',

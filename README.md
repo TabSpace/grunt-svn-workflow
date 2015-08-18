@@ -26,6 +26,8 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 需要安装 SVN CLI, 设置语言版本为 english 。(Tortoise  SVN 安装时提供了同时安装 CLI 的选项)
 
+需要安装 Grunt CLI 。
+
 ## Quick Start
 
 0. 登录 svn 仓库，为你的项目创建一个 svn 目录。
@@ -47,28 +49,54 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 > npm install -d
 > ```
 
+0. 初始化项目 svn 目录，运行：
+> 
+> ```shell
+> grunt svnInit
+> ```
 
+0. 部署本地项目文件，运行：
+> 
+> ```shell
+> grunt
+> ```
+
+0. 尝试发布项目文件，运行：
+> 
+> ```shell
+> grunt publish
+> ```
 
 ## Getting Started
 
-1. 这个插件要求使用 Grunt `~0.4.0`
+0. 这个插件要求使用 Grunt `~0.4.0`
 > 如果你还未使用过 [Grunt](http://gruntjs.com/)，请查阅 Grunt 说明：[Getting Started](http://gruntjs.com/getting-started)，这里解释了如何创建一个 [Gruntfile](http://gruntjs.com/sample-gruntfile) 以及如何安装和使用 grunt 插件。当你熟悉了这个流程，用这个命令来安装这个插件：
 > 
 > ```shell
 > npm install grunt-svn-workflow --save-dev
 > ```
 
-1. 插件安装后，需要用这行 javascript 代码来启用插件：
+0. 插件安装后，需要用这行 javascript 代码来启用插件：
 > 
 > ```js
 > grunt.loadNpmTasks('grunt-svn-workflow');
 > ```
 
-1. 请参考示例文件来配置你的任务文件，也可以直接复制任务配置作为项目模板。
+0. 请参考示例文件来配置你的任务文件，也可以直接复制任务配置作为项目模板。
 
 
 ## svnConfig multitask
+
 __用于配置 svn 根路径。如果是从本地 svn 路径来获取项目 svn 根路径，则其他任务执行前都需要先执行 `svnConfig` 任务。__
+
+__examples__
+
+```js
+grunt.registerTask('deploy', [
+    'svnConfig',
+    'svnCheckout:deploy'
+]);
+```
 
 #### Task name type: `String`
 Type: `String`
@@ -80,9 +108,9 @@ __examples__
 
 ```js
 grunt.initConfig({
-	svnConfig : {
-		project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/'
-	}
+    svnConfig : {
+        project : 'https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/'
+    }
 });
 ```
 
@@ -98,141 +126,200 @@ Type: `String`
 
 ### Usage examples
 ```js
-var $path = require('path');
+var path = require('path');
 grunt.initConfig({
-	svnConfig : {
-		project : {
-			from : $path.resolve(__dirname, 'test/test/base'),
-			to : '../'
-		}
-	}
+    svnConfig : {
+        project : {
+            from : path.resolve(__dirname, 'test/test/base'),
+            to : '../'
+        }
+    }
 });
 ```
-假设本地目录 'test/test/base' 是一个 svn 目录，对应的 svn 目录是
+假设本地目录 'test/test/base' 是一个 svn 目录，对应的 svn 目录是 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/base"。
 
+任务 svnConfig:project 执行后，获取到线上 svn 目录地址作为项目 svn 根目录地址：
 
-## svnInit task
-__Run this task with the `grunt svnInit` command.__
+grunt.config.get('svnConfig.project') === "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/"。
 
-#### options.repository
+## svnInit multitask
+
+__初始化项目 svn 目录。__
+
+#### options.repository / repository
 Type: `String`
 
-The repository url of project.
+项目 svn 根路径。
 
-#### options.cwd
+#### options.cwd / cwd
 Type: `String`
 
-The local path of the project.
+项目本地根路径。
 
 #### map
 Type: `Object`
 
-Describe the SVN directory structure.
+描述 svn 目录结构
 
 ### Usage examples
 ```js
 var path = require('path');
 
 grunt.initConfig({
-	svnConfig : {
-		// Project svn repository path.
-		repository : 'auto',
-		// Project deploy path.
-		projectDir : path.resolve(__dirname, '../'),
-		// Project gruntfile directory.
-		taskDir : 'tools'
-	},
-	svnInit : {
-		options : {
-			repository: '<%=svnConfig.repository%>',
-			cwd: '<%=svnConfig.projectDir%>'
-		},
-		// Build pathes according to the map.
-		map : {
-			'dev' : {
-				'branches' : 'folder',
-				'tags' : 'folder',
-				'trunk' : {
-					'html' : 'folder',
-					'css' : 'folder',
-					'js' : 'folder'
-				}
-			},
-			'online' : {
-				'tags' : 'folder',
-				'trunk' : 'folder'
-			}
-		}
-	}
+    projectDir : path.resolve(__dirname, '../'),
+    svnConfig : {
+        project : {
+            from : path.resolve(__dirname),
+            to : '../'
+        }
+    },
+    svnInit : {
+        options : {
+            repository: '<%=svnConfig.project%>',
+            cwd: '<%=projectDir%>'
+        },
+        project : {
+            // Build pathes according to the map.
+            map : {
+                'dev' : {
+                    'branches' : 'folder',
+                    'tags' : 'folder',
+                    'trunk' : {
+                        'html' : 'folder',
+                        'css' : 'folder',
+                        'js' : 'folder'
+                    }
+                },
+                'online' : {
+                    'tags' : 'folder',
+                    'trunk' : 'folder'
+                }
+            }
+        }
+    }
 });
 ```
-If you run the task : `grunt svnInit`, you will get the directory structure like this:
+
+```shell
+grunt svnConfig svnInit
+```
+
+之后得到如下 svn 目录结构：
 
 ![image](https://cloud.githubusercontent.com/assets/550449/5297204/6d00973e-7be7-11e4-9dcb-08e3e07247ab.png)
 
 ## svnCheckout multitask
-_Set your checkout options, then put the task in where you want._
 
-#### options.repository
+__用于批量检出文件与目录。__
+
+#### options.repository / repository
 Type: `String`
 
-The repository url of project.
+项目 svn 根路径。
 
-#### options.cwd
+#### options.cwd / cwd
 Type: `String`
 
-The local path of the project.
+项目本地根路径。
 
 #### map
 Type: `Object`
 
-Describe the SVN directory mapping relationship with the local path.
+描述 svn 路径与本地目录的映射关系。
+
+为 key : value 格式
+
+key 为相对于本地根目录的相对路径
+
+value 为相对于 svn 根路径的相对路径
 
 ### Usage examples
 ```js
 var path = require('path');
 
 grunt.initConfig({
-	svnConfig : {
-		// Project svn repository path.
-		repository : 'auto',
-		// Project deploy path.
-		projectDir : path.resolve(__dirname, '../'),
-		// Project gruntfile directory.
-		taskDir : 'tools'
-	},
-	svnCheckout : {
-		options : {
-			repository: '<%=svnConfig.repository%>',
-			cwd: '<%=svnConfig.projectDir%>'
-		},
-		deploy : {
-			map : {
-				'trunk' : 'dev/trunk',
-				'dist' : 'online/trunk'
-			}
-		}
-	}
+    projectDir : path.resolve(__dirname, '../'),
+    svnConfig : {
+        project : {
+            from : path.resolve(__dirname),
+            to : '../'
+        }
+    },
+    svnCheckout : {
+        options : {
+            repository: '<%=svnConfig.project%>',
+            cwd: '<%=projectDir%>'
+        },
+        deploy : {
+            map : {
+                'trunk' : 'dev/trunk',
+                'dist' : 'online/trunk'
+            }
+        }
+    }
 });
 ```
 
+```shell
+grunt svnConfig svnCheckout
+```
+
 ## svnCommit multitask
-_Set your commit options, then put the task in where you want._
+__用于自动化提交代码动作。__
 
-#### options.repository
+#### options.repository / repository
 Type: `String`
 
-The repository url of project.
+项目 svn 根路径。
 
-#### options.cwd
+#### options.cwd / cwd
 Type: `String`
 
-The local path of the project.
+项目本地根路径。
 
 #### log
 Type: `String` | `Function`
 
-The commit log. Can be a function that return a log string.
+要提交的日志。
+> __example__
+> 
+> ```js
+> var path = require('path');
+> 
+> grunt.initConfig({
+>     projectDir : path.resolve(__dirname, '../'),
+>     svnConfig : {
+>         project : {
+>             from : path.resolve(__dirname),
+>             to : '../'
+>         }
+>     },
+>     svnCheckout : {
+>         options : {
+>             repository: '<%=svnConfig.project%>',
+>             cwd: '<%=projectDir%>'
+>         },
+>         deploy : {
+>             map : {
+>                 'trunk' : 'dev/trunk',
+>                 'dist' : 'online/trunk'
+>             }
+>         }
+>     }
+> });
+> ```
+
+可设置为一个函数，其返回值作为提交问件时填充的日志。
+
+如果用中括号包裹，可以提供一个相对于 svn 根路径的相对路径。
+
+如果地址不是绝对路径，则自动根据 repository 属性计算 svn 路径。
+
+该目标 svn 路径的日志将会被复制作为提交日志。
+
+仅复制大于提交 svn 目标路径当前版本号的日志。
+
+如果希望人工填入日志，log 属性中需要存在 {ask} 字段，{ask} 将会被替换为人工填写的信息。
 
 #### logResource
 Type: `String`
@@ -255,41 +342,41 @@ Local relative path to be commited.
 var path = require('path');
 
 grunt.initConfig({
-	svnConfig : {
-		// Project svn repository path.
-		repository : 'auto',
-		// Project deploy path.
-		projectDir : path.resolve(__dirname, '../'),
-		// Project gruntfile directory.
-		taskDir : 'tools'
-	},
-	svnCommit : {
-		options : {
-			repository: '<%=svnConfig.repository%>',
-			cwd: '<%=svnConfig.projectDir%>'
-		},
-		withoutLog : {
-			svn : 'online/trunk',
-			src : 'trunk'
-		},
-		useStrLog : {
-			log : 'custom log.'
-			svn : 'online/trunk',
-			src : 'trunk'
-		},
-		useFunction : {
-			log : function(){
-				return 'custom log ' + Date.now();
-			},
-			svn : 'online/trunk',
-			src : 'trunk'
-		},
-		online : {
-			logResource : 'dev/trunk',
-			svn : 'online/trunk',
-			src : 'tools/temp/online'
-		}
-	}
+    svnConfig : {
+        // Project svn repository path.
+        repository : 'auto',
+        // Project deploy path.
+        projectDir : path.resolve(__dirname, '../'),
+        // Project gruntfile directory.
+        taskDir : 'tools'
+    },
+    svnCommit : {
+        options : {
+            repository: '<%=svnConfig.repository%>',
+            cwd: '<%=svnConfig.projectDir%>'
+        },
+        withoutLog : {
+            svn : 'online/trunk',
+            src : 'trunk'
+        },
+        useStrLog : {
+            log : 'custom log.'
+            svn : 'online/trunk',
+            src : 'trunk'
+        },
+        useFunction : {
+            log : function(){
+                return 'custom log ' + Date.now();
+            },
+            svn : 'online/trunk',
+            src : 'trunk'
+        },
+        online : {
+            logResource : 'dev/trunk',
+            svn : 'online/trunk',
+            src : 'tools/temp/online'
+        }
+    }
 });
 ```
 
@@ -341,28 +428,28 @@ Tag repository relative url for publishing.
 var path = require('path');
 
 grunt.initConfig({
-	svnConfig : {
-		// Project svn repository path.
-		repository : 'auto',
-		// Project deploy path.
-		projectDir : path.resolve(__dirname, '../'),
-		// Project gruntfile directory.
-		taskDir : 'tools'
-	},
-	svnTag : {
-		options : {
-			repository: '<%=svnConfig.repository%>',
-			cwd: '<%=svnConfig.projectDir%>'
-		},
-		common : {
-			dev : 'tools/temp/trunk',
-			devSvn : 'dev/trunk',
-			devTag : 'dev/tags',
-			online : 'tools/temp/online',
-			onlineSvn : 'online/trunk',
-			onlineTag : 'online/tags'
-		}
-	}
+    svnConfig : {
+        // Project svn repository path.
+        repository : 'auto',
+        // Project deploy path.
+        projectDir : path.resolve(__dirname, '../'),
+        // Project gruntfile directory.
+        taskDir : 'tools'
+    },
+    svnTag : {
+        options : {
+            repository: '<%=svnConfig.repository%>',
+            cwd: '<%=svnConfig.projectDir%>'
+        },
+        common : {
+            dev : 'tools/temp/trunk',
+            devSvn : 'dev/trunk',
+            devTag : 'dev/tags',
+            online : 'tools/temp/online',
+            onlineSvn : 'online/trunk',
+            onlineTag : 'online/tags'
+        }
+    }
 });
 ```
 
@@ -377,11 +464,11 @@ The message of prompts.
 ### Usage examples
 ```js
 grunt.initConfig({
-	confirm : {
-		distribute : {
-			msg : 'publish ?'
-		}
-	}
+    confirm : {
+        distribute : {
+            msg : 'publish ?'
+        }
+    }
 });
 ```
 
@@ -394,137 +481,137 @@ var path = require('path');
 
 module.exports = function(grunt) {
 
-	// Project configuration.
-	grunt.initConfig({
-		// Clean files for example publish.
-		clean: {
-			beforePublish: [
-				'temp'
-			]
-		},
-		// Copy files for example publish.
-		copy: {
-			forPublish: {
-				expand : true,
-				cwd : 'temp/trunk/',
-				src : '**/*',
-				dest : 'temp/online/'
-			}
-		},
-		confirm : {
-			distribute : {
-				msg : 'publish ?'
-			}
-		},
-		svnConfig : {
-			// Project svn repository path.
-			repository : 'auto',
-			// Project deploy path.
-			projectDir : path.resolve(__dirname, '../'),
-			// Project gruntfile directory.
-			taskDir : 'tools'
-		},
-		svnInit : {
-			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
-			},
-			// Build pathes according to the map.
-			map : {
-				'dev' : {
-					'branches' : 'folder',
-					'tags' : 'folder',
-					'trunk' : {
-						'html' : 'folder',
-						'css' : 'folder',
-						'js' : 'folder'
-					}
-				},
-				'online' : {
-					'tags' : 'folder',
-					'trunk' : 'folder'
-				}
-			}
-		},
-		svnCheckout : {
-			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
-			},
-			deploy : {
-				map : {
-					'trunk' : 'dev/trunk',
-					'dist' : 'online/trunk'
-				}
-			},
-			prepare : {
-				map : {
-					'tools/temp/online':'online/trunk',
-					'tools/temp/trunk' : 'dev/trunk'
-				}
-			}
-		},
-		svnCommit : {
-			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
-			},
-			online : {
-				logResource : 'dev/trunk',
-				svn : 'online/trunk',
-				src : 'tools/temp/online'
-			}
-		},
-		svnTag : {
-			options : {
-				repository: '<%=svnConfig.repository%>',
-				cwd: '<%=svnConfig.projectDir%>'
-			},
-			common : {
-				dev : 'tools/temp/trunk',
-				devSvn : 'dev/trunk',
-				devTag : 'dev/tags',
-				online : 'tools/temp/online',
-				onlineSvn : 'online/trunk',
-				onlineTag : 'online/tags'
-			}
-		}
-	});
+    // Project configuration.
+    grunt.initConfig({
+        // Clean files for example publish.
+        clean: {
+            beforePublish: [
+                'temp'
+            ]
+        },
+        // Copy files for example publish.
+        copy: {
+            forPublish: {
+                expand : true,
+                cwd : 'temp/trunk/',
+                src : '**/*',
+                dest : 'temp/online/'
+            }
+        },
+        confirm : {
+            distribute : {
+                msg : 'publish ?'
+            }
+        },
+        svnConfig : {
+            // Project svn repository path.
+            repository : 'auto',
+            // Project deploy path.
+            projectDir : path.resolve(__dirname, '../'),
+            // Project gruntfile directory.
+            taskDir : 'tools'
+        },
+        svnInit : {
+            options : {
+                repository: '<%=svnConfig.repository%>',
+                cwd: '<%=svnConfig.projectDir%>'
+            },
+            // Build pathes according to the map.
+            map : {
+                'dev' : {
+                    'branches' : 'folder',
+                    'tags' : 'folder',
+                    'trunk' : {
+                        'html' : 'folder',
+                        'css' : 'folder',
+                        'js' : 'folder'
+                    }
+                },
+                'online' : {
+                    'tags' : 'folder',
+                    'trunk' : 'folder'
+                }
+            }
+        },
+        svnCheckout : {
+            options : {
+                repository: '<%=svnConfig.repository%>',
+                cwd: '<%=svnConfig.projectDir%>'
+            },
+            deploy : {
+                map : {
+                    'trunk' : 'dev/trunk',
+                    'dist' : 'online/trunk'
+                }
+            },
+            prepare : {
+                map : {
+                    'tools/temp/online':'online/trunk',
+                    'tools/temp/trunk' : 'dev/trunk'
+                }
+            }
+        },
+        svnCommit : {
+            options : {
+                repository: '<%=svnConfig.repository%>',
+                cwd: '<%=svnConfig.projectDir%>'
+            },
+            online : {
+                logResource : 'dev/trunk',
+                svn : 'online/trunk',
+                src : 'tools/temp/online'
+            }
+        },
+        svnTag : {
+            options : {
+                repository: '<%=svnConfig.repository%>',
+                cwd: '<%=svnConfig.projectDir%>'
+            },
+            common : {
+                dev : 'tools/temp/trunk',
+                devSvn : 'dev/trunk',
+                devTag : 'dev/tags',
+                online : 'tools/temp/online',
+                onlineSvn : 'online/trunk',
+                onlineTag : 'online/tags'
+            }
+        }
+    });
 
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-svn-workflow');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-svn-workflow');
 
-	grunt.registerTask(
-		'deploy',
-		'Checkout the workingcopy according to the folder map.',
-		[
-			'svnConfig',
-			'svnCheckout:deploy'
-		]
-	);
+    grunt.registerTask(
+        'deploy',
+        'Checkout the workingcopy according to the folder map.',
+        [
+            'svnConfig',
+            'svnCheckout:deploy'
+        ]
+    );
 
-	grunt.registerTask(
-		'publish',
-		'Pack and compress files, then distribute.',
-		[
-			'clean:beforePublish',
-			'svnConfig',
-			'svnCheckout:prepare',
+    grunt.registerTask(
+        'publish',
+        'Pack and compress files, then distribute.',
+        [
+            'clean:beforePublish',
+            'svnConfig',
+            'svnCheckout:prepare',
 
-			//Add your other tasks here, such as copy, uglify, clean and so on.
-			'copy:forPublish',
+            //Add your other tasks here, such as copy, uglify, clean and so on.
+            'copy:forPublish',
 
-			'confirm:distribute',
-			'svnCommit:online',
-			'svnTag'
-		]
-	);
+            'confirm:distribute',
+            'svnCommit:online',
+            'svnTag'
+        ]
+    );
 
-	// By default, deploy the workingcopy.
-	grunt.registerTask('default', [
-		'deploy'
-	]);
+    // By default, deploy the workingcopy.
+    grunt.registerTask('default', [
+        'deploy'
+    ]);
 
 };
 
