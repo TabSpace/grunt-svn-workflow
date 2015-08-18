@@ -159,8 +159,7 @@ module.exports = function(grunt) {
 			svnInit : ['test/svnInit_test.js'],
 			svnCheckout : ['test/svnCheckout_test.js'],
 			svnCommit : ['test/svnCommit_test.js'],
-			svnCopy : ['test/svnCopy_test.js'],
-			svnTag : ['test/svnTag_test.js']
+			svnCopy : ['test/svnCopy_test.js']
 		}
 	});
 

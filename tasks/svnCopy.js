@@ -152,7 +152,7 @@ module.exports = function(grunt){
 					complete : function(error, result, code){
 						// Get log
 						var log = getLog(result.stdout);
-						info.lastCopyLog = log;
+						info.lastLog = log;
 
 						callback();
 					}

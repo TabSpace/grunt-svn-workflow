@@ -14,6 +14,10 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 在任务队列中可以设置一个提示作为中断任务的选择。
 
+大量使用相对路径，可以实现一套配置，多个项目复用。
+
+便于封装业务流程，实现操作标准化，也能够针对不同需求自定义各种 svn 操作的自动化流程。
+
 ## For
 
 用于管理那些还需要在 SVN 进行管理的项目。
@@ -43,25 +47,31 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 >
 >![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
 
-0. 安装项目依赖的 npm 包，运行：
+0. 安装项目依赖的 npm 包：
 > 
 > ```shell
 > npm install -d
 > ```
 
-0. 初始化项目 svn 目录，运行：
+0. 初始化项目 svn 目录：
 > 
 > ```shell
-> grunt svnInit
+> grunt svnConfig svnInit
 > ```
 
-0. 部署本地项目文件，运行：
+0. 部署本地项目文件：
 > 
 > ```shell
-> grunt
+> grunt deploy
 > ```
 
-0. 尝试发布项目文件，运行：
+0. 创建一个项目分支：
+> 
+> ```shell
+> grunt branch
+> ```
+
+0. 发布项目文件：
 > 
 > ```shell
 > grunt publish
@@ -365,7 +375,7 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 >         // 执行下面的任务，将会在这个目录提交代码: "~/work/svn-workflow/example/tools/temp/online" 。
 >         // 代码被提交到 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/trunk" 。
 >         // 提交日志从这个 svn 路径获取："https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/dev/trunk"
->         copyFrom : {
+>         copyLogFrom : {
 >             log : '[dev/trunk]',
 >             svn : 'online/trunk',
 >             src : 'tools/temp/online'
@@ -378,97 +388,121 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 > grunt svnConfig svnCommit
 > ```
 
-## svnTag multitask
-_Set your tag options, then put the task in where you want._
+## svnCopy multitask
 
-#### options.repository
-Type: `String`
-
-The repository url of project.
-
-#### options.cwd
-Type: `String`
-
-The local path of the project.
-
-#### dev
-Type: `String`
-
-Local relative path for development.
-
-#### devSvn
-Type: `String`
-
-Repository relative url for development.
-
-#### devTag
-Type: `String`
-
-Tag repository relative url for development.
-
-#### online
-Type: `String`
-
-Local relative path for publishing.
-
-#### onlineSvn
-Type: `String`
-
-Repository relative url for publishing.
-
-#### onlineTag
-Type: `String`
-
-Tag repository relative url for publishing.
-
-### Usage examples
-```js
-var path = require('path');
-
-grunt.initConfig({
-    svnConfig : {
-        // Project svn repository path.
-        repository : 'auto',
-        // Project deploy path.
-        projectDir : path.resolve(__dirname, '../'),
-        // Project gruntfile directory.
-        taskDir : 'tools'
-    },
-    svnTag : {
-        options : {
-            repository: '<%=svnConfig.repository%>',
-            cwd: '<%=svnConfig.projectDir%>'
-        },
-        common : {
-            dev : 'tools/temp/trunk',
-            devSvn : 'dev/trunk',
-            devTag : 'dev/tags',
-            online : 'tools/temp/online',
-            onlineSvn : 'online/trunk',
-            onlineTag : 'online/tags'
-        }
-    }
-});
-```
+> __复制一个 svn 目录，通常用于自动生成 tag 流程和自动生成 branch 流程。__
+> 
+> #### options.repository / repository
+> Type: `String`
+> 
+> 项目 svn 根路径。
+> 
+> #### from
+> Type: `String`
+> 
+> 要拷贝的目录，填写相对于项目 svn 根路径的相对路径。
+> 
+> #### to
+> Type: `String`
+> 
+> 拷贝目录到目标 svn 目录，填写相对于项目 svn 根路径的相对路径。
+> 
+> #### question
+> Type: `String`
+> 
+> 如果要求从控制台获取拷贝目录的重命名，可以通过 question 属性自定义控制台提示的问题。
+> 
+> #### rename
+> Type: `String` | `Function`
+> 
+> 拷贝目录的重命名名称。
+> 
+> 如果不提供 rename 属性，则用被拷贝目录的 svn 版本号(revision)作为重命名名称。
+> 
+> 可以通过一个函数自定义重命名名称，这个函数会接受一个 json 对象作为参数。
+> 
+> - info : 函数参数。
+> - info.name : 要拷贝的目录的名称。
+> - info.revision : 要拷贝的目录的当前版本号。
+> - info.lastLog : 存放拷贝目录的目标目录的最新日志。
+> - info.ask : 从控制台获取的用户输入。
+> 
+> 可以设置 rename 为一个模板字符串，自动替换花括号里面的内容为 info 对象中对应的属性值。
+> 
+> 例如设置 rename 为 '{name}_{revision}' 。如果被拷贝目录名称为 trunk, 最新版本号为 13542, 则拷贝目录被重命名为: trunk_13542 。
+> 
+> 如果 rename 属性中存在 '{ask}' 字段，会在控制台给出提示，要求用户输入文案来替换这个字段。
+> 
+> #### svnCopy usage examples
+> ```js
+> var path = require('path');
+> 
+> grunt.initConfig({
+>     projectDir : path.resolve(__dirname, '../'),
+>     svnConfig : {
+>         project : {
+>             from : path.resolve(__dirname),
+>             to : '../'
+>         }
+>     },
+>     svnCopy : {
+>         options : {
+>             repository: '<%=svnConfig.project%>'
+>         },
+>         // 用 online/trunk 的版本号作为重命名，复制 online/trunk 目录到 online/tags 下
+>         // 假设项目 svn 根路径为 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/"。
+>         // 执行下面任务，将会复制目录："https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/trunk"
+>         // 如果源目录最新版本号为 13542, 则复制完成后，被复制的 svn 目录最终路径为：
+>         // "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/tags/13542"
+>         autoTag : {
+>             from : 'online/trunk',
+>             to : 'online/tags'
+>         },
+>         // 可以在控制台显示提示，要求用户输入被复制目录的重命名名称。
+>         branch : {
+>             question : 'Input the branch name:'.
+>             rename : 'branch_{ask}',
+>             from : 'dev/trunk',
+>             to : 'dev/branches'
+>         },
+>         // 可以通过一个函数自定义重命名名称。
+>         // info 参数提供了常用的参与计算的属性。
+>         tagByCompute : {
+>             rename : function(info){
+>                 var tagName = '';
+>                 // Compute tagName by info
+>                 return tagName;
+>             },
+>             from : 'dev/trunk',
+>             to : 'dev/branches'
+>         }
+>     }
+> });
+> ```
+> 
+> ```shell
+> grunt svnConfig svnCopy
+> ```
 
 ## confirm multitask
-_Create a simple task and put it in the task queue, to generate a confirm prompt in the running task._
 
-#### msg
-Type: `String`
-
-The message of prompts.
-
-### Usage examples
-```js
-grunt.initConfig({
-    confirm : {
-        distribute : {
-            msg : 'publish ?'
-        }
-    }
-});
-```
+> __在任务执行中创建一个问答，来决定任务流程是否继续下去__
+> 
+> #### msg
+> Type: `String`
+> 
+> 提示信息
+> 
+> #### confirm usage examples
+> ```js
+> grunt.initConfig({
+>     confirm : {
+>         distribute : {
+>             msg : 'publish ?'
+>         }
+>     }
+> });
+> ```
 
 ## example
 
