@@ -4,4 +4,9 @@ tmp
 .svn
 .DS_Store
 
+test/test/base
+test/test/checkout
+test/test/temp
+test/test/commit
 test/test/copy_revision.js
+
