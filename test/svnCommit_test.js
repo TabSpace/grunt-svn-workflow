@@ -13,6 +13,7 @@ exports.svnCommit = function(test){
 	var timeStamp = $grunt.config.get('timeStamp');
 	var cwdbase = $grunt.config.get('svnCommit.options.cwd');
 	var repository = $grunt.config.get('svnCommit.options.repository');
+	var commitCwd = $tools.join(cwdbase, 'test/commit');
 
 	['normal', 'fn', 'svn', 'ask'].forEach(function(name){
 		commands.push(function(error, result, code){
@@ -72,6 +73,8 @@ exports.svnCommit = function(test){
 				!error,
 				'Should run nodeunit:svnCommit without error.'
 			);
+
+			$grunt.file.delete(commitCwd);
 
 			test.done();
 		}
