@@ -326,16 +326,22 @@ module.exports = function(grunt) {
 		function(){
 			var done = this.async();
 
+			var args = ['svn-test'];
+			if(grunt.option('verbose')){
+				args.push('--verbose');
+			}
 			var sp = grunt.util.spawn({
 				cmd : 'grunt',
 				grunt : true,
-				args : ['svn-test']
+				args : args
 			}, function(error, result, code){
 				done();
 			});
 
 			var spawnTSCommit = '';
 			var spawnTSCopy = '';
+
+			grunt.file.write(testOutputFile, 'assertions passed');
 
 			sp.stdout.on('data', function(data){
 				var msg = data.toString().trim();
@@ -374,8 +380,6 @@ module.exports = function(grunt) {
 					spawnTSCopy = spawnTSCopy || timeStamp;
 					sp.stdin.write(spawnTSCopy + '_ask\n');
 				}
-
-				grunt.file.write(testOutputFile, 'assertions passed');
 
 				if(msg.indexOf('assertions failed') >= 0 || msg.indexOf('Fatal error') >= 0){
 					grunt.config.set('testResult', false);

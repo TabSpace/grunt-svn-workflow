@@ -3,3 +3,5 @@ npm-debug.log
 tmp
 .svn
 .DS_Store
+
+test/test/copy_revision.js

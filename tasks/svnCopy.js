@@ -215,7 +215,7 @@ module.exports = function(grunt){
 					}
 				});
 
-				grunt.log.writeln('svn', 'copy', pathFrom, targetPath, '-m', '\n' + strLog);
+				grunt.verbose.or.writeln('svn', 'copy', pathFrom, targetPath, '-m', '\n' + strLog);
 
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){

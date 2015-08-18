@@ -153,7 +153,7 @@ module.exports = function(grunt){
 					}
 				});
 
-				grunt.log.writeln('svn', 'commit', '-m', '\n' + strLog);
+				grunt.verbose.or.writeln('svn', 'commit', '-m', '\n' + strLog);
 
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
