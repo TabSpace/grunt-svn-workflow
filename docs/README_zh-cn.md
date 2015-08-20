@@ -4,23 +4,21 @@
 [![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
 [![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 
->用于实现跨平台的 SVN 操作自动化流程
+> 一个 SVN 操作自动化解决方案
 
-帮助改进 SVN 目录操作的自动化流程。
+帮助实现和改进 SVN 目录操作的自动化流程。
 
 example 目录给出了一个基于 SVN 项目的简单管理流程。
 
-发布任务能够从一个 SVN 路径复制从上次打包到当前版本的日志，作为最新发布代码的日志。
+能够从一个 SVN 路径复制从上次打包到当前版本的日志，作为最新发布代码的日志。
 
-在任务队列中可以设置一个提示作为中断任务的选择。
+在任务队列中可以设置一个提示，根据选择来决定是否中断任务。
 
-大量使用相对路径，可以实现一套配置，多个项目复用。
-
-便于封装业务流程，实现操作标准化，也能够针对不同需求自定义各种 svn 操作的自动化流程。
+使用相对路径，可以实现一套配置，多个项目复用。
 
 ## For
 
-用于管理那些还需要在 SVN 进行管理的项目。
+用于那些还需要使用 SVN 的项目。
 
 ## Prepare
 
@@ -34,11 +32,11 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 ## Quick Start
 
-1. 登录 svn 仓库，为你的项目创建一个 svn 目录。
+1. 为你的项目创建一个 svn 目录，作为项目管理的 svn 根路径。
 
-2. 在项目 svn 目录里面创建一个 tools 目录。
+2. 在项目 svn 目录里面创建一个 tools 目录，用于存放各种自动化工具。
 
-3. 在本地建立一个目录，用于部署你的项目。__注意：这个目录不能是 svn 目录。__
+3. 在本地建立一个目录，作为项目的本地根路径，用于部署你的项目。__注意：这不是 svn 目录，不需要检出。__
 
 4. 将 tools 目录检出到本地项目目录中。
 
@@ -49,14 +47,14 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
  > ![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
  > 
 
-6. 安装项目依赖的 npm 包：
+6. 安装项目依赖的 npm 组件：
  > 
  > ```shell
  > npm install -d
  > ```
  >
 
-7. 初始化项目 svn 目录：
+7. 初始化项目 svn 目录结构：
  > 
  > ```shell
  > grunt svnConfig svnInit
@@ -95,7 +93,7 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
  > ```
  > 
 
-3. 请参考示例文件来配置你的任务文件，也可以直接复制任务配置作为项目模板。
+3. 参考示例文件来配置任务文件，也可以直接复制任务配置作为项目模板。
 
 ## svnConfig multitask
 
@@ -134,7 +132,9 @@ Type: `String`
 #### to
 Type: `String`
 
-最终我们需要定位的 svn 路径与本地目录 svn 路径的相对路径。
+最终我们需要定位的 svn 路径与本地目录对应 svn 路径的相对路径。
+
+这种方式有利于在项目目录规范制定后，实现配置文件的高度复用。
 
 #### svnConfig usage examples
 ```js

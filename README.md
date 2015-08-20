@@ -4,7 +4,7 @@
 [![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
 [![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 
-[中文文档](https://github.com/Esoul/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
+[中文](https://github.com/Esoul/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
 
 > 一个 SVN 操作自动化解决方案
 
