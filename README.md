@@ -43,7 +43,8 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 4. 将 tools 目录检出到本地项目目录中。
 
 5. 将 example/tools 下的文件复制到你的项目目录中的 tools 文件夹下。
-假设你的项目名称为 svn-workflow ，那么你此时的本地项目目录结构如图所示：
+ > 
+ > 假设你的项目名称为 svn-workflow ，那么你此时的本地项目目录结构如图所示：
  > 
  > ![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
  > 
@@ -78,21 +79,23 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 ## Getting Started
 
-0. 这个插件要求使用 Grunt `~0.4.0`
-如果你还未使用过 [Grunt](http://gruntjs.com/)，请查阅 Grunt 说明：[Getting Started](http://gruntjs.com/getting-started)，这里解释了如何创建一个 [Gruntfile](http://gruntjs.com/sample-gruntfile) 以及如何安装和使用 grunt 插件。当你熟悉了这个流程，用这个命令来安装这个插件：
+1. 这个插件要求使用 Grunt `~0.4.0`
+ > 
+ > 如果你还未使用过 [Grunt](http://gruntjs.com/)，请查阅 Grunt 说明：[Getting Started](http://gruntjs.com/getting-started)，这里解释了如何创建一个 [Gruntfile](http://gruntjs.com/sample-gruntfile) 以及如何安装和使用 grunt 插件。当你熟悉了这个流程，用这个命令来安装这个插件：
+ > 
+ > ```shell
+ > npm install grunt-svn-workflow --save-dev
+ > ```
+ > 
 
-```shell
-npm install grunt-svn-workflow --save-dev
-```
+2. 插件安装后，需要用这行 javascript 代码来启用插件：
+ > 
+ > ```js
+ > grunt.loadNpmTasks('grunt-svn-workflow');
+ > ```
+ > 
 
-0. 插件安装后，需要用这行 javascript 代码来启用插件：
-
-```js
-grunt.loadNpmTasks('grunt-svn-workflow');
-```
-
-0. 请参考示例文件来配置你的任务文件，也可以直接复制任务配置作为项目模板。
-
+3. 请参考示例文件来配置你的任务文件，也可以直接复制任务配置作为项目模板。
 
 ## svnConfig multitask
 
@@ -217,7 +220,9 @@ grunt svnConfig svnInit
 之后得到如下 svn 目录结构：
 
 ![image](https://cloud.githubusercontent.com/assets/550449/5297204/6d00973e-7be7-11e4-9dcb-08e3e07247ab.png)
- svnCheckout multitask
+
+## svnCheckout multitask
+
 __用于批量检出文件与目录。__
 
 #### options.repository / repository
