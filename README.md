@@ -4,6 +4,8 @@
 [![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
 [![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 
+[中文文档](https://github.com/Esoul/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
+
 >用于实现跨平台的 SVN 操作自动化流程
 
 帮助改进 SVN 目录操作的自动化流程。
