@@ -44,8 +44,9 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 5. 将 example/tools 下的文件复制到你的项目目录中的 tools 文件夹下。
 假设你的项目名称为 svn-workflow ，那么你此时的本地项目目录结构如图所示：
-
-![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
+ > 
+ > ![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
+ > 
 
 6. 安装项目依赖的 npm 包：
  > 
