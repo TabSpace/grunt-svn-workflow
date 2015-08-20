@@ -48,28 +48,32 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 ![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
 
 6. 安装项目依赖的 npm 包：
-
-```shell
-npm install -d
-```
+ > 
+ > ```shell
+ > npm install -d
+ > ```
+ >
 
 7. 初始化项目 svn 目录：
-
-```shell
-grunt svnConfig svnInit
-```
+ > 
+ > ```shell
+ > grunt svnConfig svnInit
+ > ```
+ >
 
 8. 部署本地项目文件：
-
-```shell
-grunt deploy
-```
+ > 
+ > ```shell
+ > grunt deploy
+ > ```
+ > 
 
 9. 发布项目文件：
-
-```shell
-grunt publish
-```
+ > 
+ > ```shell
+ > grunt publish
+ > ```
+ > 
 
 ## Getting Started
 
@@ -475,7 +479,9 @@ grunt.initConfig({
 ```shell
 grunt svnConfig svnCopy
 ```
- confirm multitask
+
+## confirm multitask
+
 __在任务执行中创建一个问答，来决定任务流程是否继续下去__
 
 #### msg
@@ -666,10 +672,10 @@ module.exports = function(grunt) {
 
 ## Release History
 
- * 2015-08-18   v0.2.0   重大更新，移除 svnTag 任务，添加 svnCopy 任务，更新各个任务使用方式
- * 2015-04-01   v0.1.2   为 svnCommit 任务添加 log 选项
- * 2014-12-09   v0.1.1   解决任务执行时会发生偶然的报错的问题
- * 2014-12-04   v0.1.0   发布第一个正式版本，基于Grunt 0.4.0
+ * 2015-08-18 v0.2.0 重大更新，移除 svnTag 任务，添加 svnCopy 任务，更新各个任务使用方式
+ * 2015-04-01 v0.1.2 为 svnCommit 任务添加 log 选项
+ * 2014-12-09 v0.1.1 解决任务执行时会发生偶然的报错的问题
+ * 2014-12-04 v0.1.0 发布第一个正式版本，基于Grunt 0.4.0
 
 
 
