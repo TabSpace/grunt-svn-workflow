@@ -680,10 +680,11 @@ module.exports = function(grunt) {
 
 ## Release History
 
- * 2015-08-18 v0.2.0 重大更新，移除 svnTag 任务，添加 svnCopy 任务，更新各个任务使用方式
- * 2015-04-01 v0.1.2 为 svnCommit 任务添加 log 选项
- * 2014-12-09 v0.1.1 解决任务执行时会发生偶然的报错的问题
- * 2014-12-04 v0.1.0 发布第一个正式版本，基于Grunt 0.4.0
+ * 2015-08-20 v0.2.1 Improve docs. Give an new example.
+ * 2015-08-18 v0.2.0 Important update. Remove svnTag task, add svnCopy task, refactor all task files.
+ * 2015-04-01 v0.1.2 Add log option for svnCommit task.
+ * 2014-12-09 v0.1.1 Fix the bug that get an error occasionally in task running.
+ * 2014-12-04 v0.1.0 The first official release, base on Grunt 0.4.X.
 
 
 
