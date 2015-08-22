@@ -680,7 +680,7 @@ module.exports = function(grunt) {
 
 ## Release History
 
- * 2015-08-20 v0.2.1 Improve docs. Give an new example.
+ * 2015-08-20 v0.2.1 Improve docs. Give a new example.
  * 2015-08-18 v0.2.0 Important update. Remove svnTag task, add svnCopy task, refactor all task files.
  * 2015-04-01 v0.1.2 Add log option for svnCommit task.
  * 2014-12-09 v0.1.1 Fix the bug that get an error occasionally in task running.
