@@ -1,10 +1,10 @@
 #grunt-svn-workflow
 
-[![Build Status: Linux](https://travis-ci.org/Esoul/grunt-svn-workflow.svg?branch=master)](https://travis-ci.org/Esoul/grunt-svn-workflow)
-[![dependencies](https://david-dm.org/Esoul/grunt-svn-workflow.png)](http://david-dm.org/Esoul/grunt-svn-workflow)
+[![Build Status: Linux](https://travis-ci.org/tony-302/grunt-svn-workflow.svg?branch=master)](https://travis-ci.org/tony-302/grunt-svn-workflow)
+[![dependencies](https://david-dm.org/tony-302/grunt-svn-workflow.png)](http://david-dm.org/tony-302/grunt-svn-workflow)
 [![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 
-[中文](https://github.com/Esoul/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
+[中文](https://github.com/tony-302/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
 
 > 一个 SVN 操作自动化解决方案
 
@@ -680,6 +680,7 @@ module.exports = function(grunt) {
 
 ## Release History
 
+ * 2015-08-25 v0.2.2 Fix git url.
  * 2015-08-20 v0.2.1 Improve docs. Give a new example.
  * 2015-08-18 v0.2.0 Important update. Remove svnTag task, add svnCopy task, refactor all task files.
  * 2015-04-01 v0.1.2 Add log option for svnCommit task.
