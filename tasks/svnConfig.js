@@ -59,7 +59,11 @@ module.exports = function(grunt){
 					}, {});
 
 					if(json.url){
-						repositoryUrl = $tools.join(json.url, to);
+						if($tools.type(to) === 'string'){
+							repositoryUrl = $tools.join(json.url, to);
+						}else if($tools.type(to) === 'function'){
+							repositoryUrl = to(json.url);
+						}
 						grunt.config.set('svnConfig.' + target, repositoryUrl);
 						ok(repositoryUrl);
 					}else{

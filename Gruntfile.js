@@ -44,6 +44,14 @@ module.exports = function(grunt) {
 				from : $path.resolve(__dirname, 'test/test/base'),
 				// 最终我们需要定位的 svn 路径与本地 svn 目录 svn 路径的相对路径
 				to : '../'
+			},
+			fn : {
+				// 用于获取 svn 根路径的本地 svn 目录
+				from : $path.resolve(__dirname, 'test/test/base'),
+				// 最终我们需要定位的 svn 路径与本地 svn 目录 svn 路径的相对路径
+				to : function(url){
+					return url.replace(/base$/, '');
+				}
 			}
 		},
 		svnInit : {

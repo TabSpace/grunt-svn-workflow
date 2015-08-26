@@ -130,9 +130,11 @@ Type: `String`
 用于获取 svn 根路径的本地 svn 目录。
 
 #### to
-Type: `String`
+Type: `String` | `Function`
 
 最终我们需要定位的 svn 路径与本地目录对应 svn 路径的相对路径。
+
+也可以是一个函数，通过传递的 svn 路径作为参数，运算出要定位的目标 svn 路径。
 
 这种方式有利于在项目目录规范制定后，实现配置文件的高度复用。
 
@@ -144,6 +146,12 @@ grunt.initConfig({
         project : {
             from : path.resolve(__dirname, 'test/test/base'),
             to : '../'
+        },
+        compute : {
+            from : path.resolve(__dirname, 'test/test/base'),
+            to : function(url){
+                return url.replace(/base$/, '');
+            }
         }
     }
 });
