@@ -160,28 +160,8 @@ module.exports = function(grunt){
 
 			});
 
-			if($tools.type(data.rename) === 'string'){
-				(function(){
-					var braceResults = [];
-					var result;
-					while((result = regBrace.exec(data.rename)) && result[1]){
-						braceResults.push(result[1]);
-					}
-
-					if(braceResults.indexOf('ask') >= 0){
-						jobs.push(function(callback){
-							var question = data.question || 'Input message for task svnCopy:' + target + '\n';
-							$askFor([question], function(spec) {
-								info.ask = spec[question];
-								callback();
-							});
-						});
-					}
-				})();
-			}
-
 			jobs.push(function(callback){
-				
+
 				if($tools.type(rename) === 'function'){
 					rename = rename(info);
 				}
@@ -189,6 +169,34 @@ module.exports = function(grunt){
 				if($tools.type(rename) !== 'string'){
 					rename = '';
 				}
+
+				callback();
+
+			});
+
+			jobs.push(function(callback){
+				if($tools.type(rename) === 'string'){
+					var braceResults = [];
+					var result;
+					while((result = regBrace.exec(rename)) && result[1]){
+						braceResults.push(result[1]);
+					}
+
+					if(braceResults.indexOf('ask') >= 0){
+						var question = data.question || 'Input message for task svnCopy:' + target + '\n';
+						$askFor([question], function(spec) {
+							info.ask = spec[question];
+							callback();
+						});
+					}else{
+						callback();
+					}
+				}else{
+					callback();
+				}
+			});
+
+			jobs.push(function(callback){
 
 				if(!rename){
 					rename = info.revision;

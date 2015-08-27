@@ -688,7 +688,8 @@ module.exports = function(grunt) {
 
 ## Release History
 
- * 2015-08-25 v0.2.3 The option "to" of task svnConfig could be a function.
+ * 2015-08-27 v0.2.4 The "rename" option in svnCopy task could get return value as answer template.
+ * 2015-08-26 v0.2.3 The option "to" of task svnConfig could be a function.
  * 2015-08-25 v0.2.2 Fix git url.
  * 2015-08-20 v0.2.1 Improve docs. Give a new example.
  * 2015-08-18 v0.2.0 Important update. Remove svnTag task, add svnCopy task, refactor all task files.

@@ -6,7 +6,7 @@ var $tools = require('../utils/tools');
 var $cmdSeries = require('../utils/cmdSeries');
 
 exports.svnConfig = function(test){
-	test.expect(5);
+	test.expect(6);
 
 	var commands = [];
 
@@ -15,7 +15,7 @@ exports.svnConfig = function(test){
 	var revisionFile = $path.resolve('./test/test/copy_revision.js');
 	var revision = $grunt.file.read(revisionFile);
 
-	['normal', 'fn', 'tpl', 'ask'].forEach(function(name){
+	['normal', 'fn', 'tpl', 'ask', 'fnask'].forEach(function(name){
 		commands.push(function(error, result, code){
 			var rename = '';
 			if(name === 'normal'){
@@ -26,6 +26,8 @@ exports.svnConfig = function(test){
 				rename = timeStamp + '_normal_' + revision;
 			}else if(name === 'ask'){
 				rename = timeStamp + '_' + timeStamp + '_ask';
+			}else if(name === 'fnask'){
+				rename = timeStamp + '_fn_' + timeStamp + '_ask';
 			}
 
 			var svnPath = $tools.join(repository, 'copy', rename);

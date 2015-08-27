@@ -157,6 +157,14 @@ module.exports = function(grunt) {
 				to : 'copy',
 				question : 'Input the branch name:',
 				rename : '<%=timeStamp%>_{ask}'
+			},
+			test_fnask : {
+				from : 'commit/normal',
+				to : 'copy',
+				question : 'Input the branch_fn name:',
+				rename : function(info){
+					return timeStamp + '_fn_{ask}';
+				}
 			}
 		},
 		testResult : true,
@@ -386,6 +394,11 @@ module.exports = function(grunt) {
 				}
 
 				if(msg.indexOf('Input the branch name:') >= 0){
+					spawnTSCopy = spawnTSCopy || timeStamp;
+					sp.stdin.write(spawnTSCopy + '_ask\n');
+				}
+
+				if(msg.indexOf('Input the branch_fn name:') >= 0){
 					spawnTSCopy = spawnTSCopy || timeStamp;
 					sp.stdin.write(spawnTSCopy + '_ask\n');
 				}
