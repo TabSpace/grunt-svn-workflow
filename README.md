@@ -29,6 +29,7 @@ node, npm.
 SVN >= 1.6
 
 Need to install SVN CLI, set the language edition as English. (Options for CLI installation are provided when Tortoise SVN is installed)
+
 Grunt CLI
 
 ## Quick Start
