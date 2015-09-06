@@ -6,71 +6,70 @@
 
 [中文](https://github.com/tony-302/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
 
-> 一个 SVN 操作自动化解决方案
+> An SVN operation automation solution
 
-帮助实现和改进 SVN 目录操作的自动化流程。
+Facilitate to realize and improve automatic processes for SVN directory operation.
 
-example 目录给出了一个基于 SVN 项目的简单管理流程。
+Example directory provides a simple management process based on SVN project. 
 
-能够从一个 SVN 路径复制从上次打包到当前版本的日志，作为最新发布代码的日志。
+Can copy from the last package to the current log through a SVN route, and use it as the log of the latest code.  
 
-在任务队列中可以设置一个提示，根据选择来决定是否中断任务。
+Set a prompt in the task queue, and determine whether to interrupt tasks based on options.  
 
-使用相对路径，可以实现一套配置，多个项目复用。
+Realize a configuration with relative path and reuse it for many projects. 
 
 ## For
 
-用于那些还需要使用 SVN 的项目。
+It is used for projects which still need to use SVN. 
 
 ## Prepare
 
-安装 node, npm 环境。
+node, npm.
 
-确保 SVN 版本 >= 1.6 。
+SVN >= 1.6
 
-需要安装 SVN CLI, 设置语言版本为 english 。(Tortoise  SVN 安装时提供了同时安装 CLI 的选项)
-
-需要安装 Grunt CLI 。
+Need to install SVN CLI, set the language edition as English. (Options for CLI installation are provided when Tortoise SVN is installed)
+Grunt CLI
 
 ## Quick Start
 
-1. 为你的项目创建一个 svn 目录，作为项目管理的 svn 根路径。
+1. Create a svn directory for your project, and use it as the svn root path for project management. 
 
-2. 在项目 svn 目录里面创建一个 tools 目录，用于存放各种自动化工具。
+2. Create a tools directory in svn directory, and use it for storing various automated tools.
 
-3. 在本地建立一个目录，作为项目的本地根路径，用于部署你的项目。__注意：这不是 svn 目录，不需要检出。__
+3. Create a local directory, and use it as the local root path and for deploying your project. __Attention: it is not a svn directory and not to be detected.__
 
-4. 将 tools 目录检出到本地项目目录中。
+4. Detect tools directory in the local project directory. 
 
-5. 将 example/tools 下的文件复制到你的项目目录中的 tools 文件夹下。
+5. Copy files under example/tools to tools folder under your project directory. 
  > 
- > 假设你的项目名称为 svn-workflow ，那么你此时的本地项目目录结构如图所示：
+ > Suppose your project name is svn-workflow, then, the structure of the local project directory is shown below: 
  > 
  > ![image](https://cloud.githubusercontent.com/assets/550449/5297160/0b58853c-7be7-11e4-888f-a6a567e61445.png)
  > 
 
-6. 安装项目依赖的 npm 组件：
+6. Install npm component for project independency: 
  > 
  > ```shell
  > npm install -d
  > ```
  >
 
-7. 初始化项目 svn 目录结构：
+7. Structure of svn directory of initialized project:
  > 
  > ```shell
  > grunt svnConfig svnInit
  > ```
  >
 
-8. 部署本地项目文件：
+8. Deploy local project files: 
  > 
  > ```shell
  > grunt deploy
  > ```
  > 
 
-9. 发布项目文件：
+9. Release project files: 
  > 
  > ```shell
  > grunt publish
@@ -79,27 +78,26 @@ example 目录给出了一个基于 SVN 项目的简单管理流程。
 
 ## Getting Started
 
-1. 这个插件要求使用 Grunt `~0.4.0`
+1. This plugin is required to use Grunt ~0.4.0  
  > 
- > 如果你还未使用过 [Grunt](http://gruntjs.com/)，请查阅 Grunt 说明：[Getting Started](http://gruntjs.com/getting-started)，这里解释了如何创建一个 [Gruntfile](http://gruntjs.com/sample-gruntfile) 以及如何安装和使用 grunt 插件。当你熟悉了这个流程，用这个命令来安装这个插件：
- > 
+ > If you have never used [Grunt](http://gruntjs.com/), please refer to Grunt description: [Getting Started](http://gruntjs.com/getting-started), which introduces how to create a Gruntfile and how to install and use grunt plugin. When you get familiar with this process, install the plugin with the command: 
  > ```shell
  > npm install grunt-svn-workflow --save-dev
  > ```
  > 
 
-2. 插件安装后，需要用这行 javascript 代码来启用插件：
+2. After the plugin is installed, get it started with javascript code: 
  > 
  > ```js
  > grunt.loadNpmTasks('grunt-svn-workflow');
  > ```
  > 
 
-3. 参考示例文件来配置任务文件，也可以直接复制任务配置作为项目模板。
+3. Refer to sample file to configure task file, or directly copy task configuration and use it as the project template. 
 
 ## svnConfig multitask
 
-__用于配置 svn 根路径。如果是从本地 svn 路径来获取项目 svn 根路径，则其他任务执行前都需要先执行 `svnConfig` 任务。__
+__It is used for configuration of svn root path. If svn root path of the project is obtained from local svn path, task svnConfig should be executed before other tasks are fulfilled.__
 
 __examples__
 
@@ -111,10 +109,12 @@ grunt.registerTask('deploy', [
 ```
 
 #### Task name type: `String`
+
 Type: `String`
+
 Default: `''`
 
-如果不提供选项对象，只填写一个字符串，则此字符串直接作为项目的 svn 根路径。
+In case of no options but a character string, this character string shall be directly used as svn root path of the project. 
 
 __examples__
 
@@ -127,20 +127,23 @@ grunt.initConfig({
 ```
 
 #### from
+
 Type: `String`
 
-用于获取 svn 根路径的本地 svn 目录。
+It is used for obtaining the local svn directory of svn root path. 
 
 #### to
+
 Type: `String` | `Function`
 
-最终我们需要定位的 svn 路径与本地目录对应 svn 路径的相对路径。
+It is the svn path which need to be located finally and the relative path of svn path corresponding to local directory. 
 
-也可以是一个函数，通过传递的 svn 路径作为参数，运算出要定位的目标 svn 路径。
+It can be a function, which uses the svn path transmitted as the parameter and figures out the target svn path to be located. 
 
-这种方式有利于在项目目录规范制定后，实现配置文件的高度复用。
+It facilitates to realize efficient reuse of configuration file after the project directory is standardized and established. 
 
 #### svnConfig usage examples
+
 ```js
 var path = require('path');
 grunt.initConfig({
@@ -159,32 +162,36 @@ grunt.initConfig({
 });
 ```
 
-假设本地目录 'test/test/base' 是一个 svn 目录，对应的 svn 目录是 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/base"。
+Suppose the local directory  'test/test/base' is a svn directory, corresponding svn directory is "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/base".
 
-任务 svnConfig:project 执行后，获取到线上 svn 目录地址作为项目 svn 根目录地址：
+After task svnConfig:project is fulfilled, obtain the address of the online svn directory and use it as that of svn root path of the project: 
 
 grunt.config.get('svnConfig.project') === "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/test/"。
 
 ## svnInit multitask
 
-__初始化项目 svn 目录。__
+__svn directory of initialized project.__
 
 #### options.repository / repository
+
 Type: `String`
 
-项目 svn 根路径。
+Project svn root path. 
 
 #### options.cwd / cwd
+
 Type: `String`
 
-项目本地根路径。
+Project local root path.
 
 #### map
+
 Type: `Object`
 
-描述 svn 目录结构
+It describes the structure of svn directory
 
 #### svnInit usage examples
+
 ```js
 var path = require('path');
 
@@ -227,36 +234,40 @@ grunt.initConfig({
 grunt svnConfig svnInit
 ```
 
-之后得到如下 svn 目录结构：
+Then, figure out the structure of svn directory as below: 
 
 ![image](https://cloud.githubusercontent.com/assets/550449/5297204/6d00973e-7be7-11e4-9dcb-08e3e07247ab.png)
 
 ## svnCheckout multitask
 
-__用于批量检出文件与目录。__
+__It is used for lot inspection of files and directories.__
 
 #### options.repository / repository
+
 Type: `String`
 
-项目 svn 根路径。
+Project svn root path. 
 
 #### options.cwd / cwd
+
 Type: `String`
 
-项目本地根路径。
+Project local root path. 
 
 #### map
+
 Type: `Object`
 
-描述 svn 路径与本地目录的映射关系。
+It describes the mapping relation between svn path and local directory. 
 
-为 key : value 格式
+It is a key : value format 
 
-key 为相对于本地根目录的相对路径
+key is a relative path to the local root directory 
 
-value 为相对于 svn 根路径的相对路径
+value is a svnCommit multitask relative to svn  
 
 #### svnCheckout usage examples
+
 ```js
 var path = require('path');
 
@@ -289,51 +300,58 @@ grunt svnConfig svnCheckout
 
 ## svnCommit multitask
 
-__用于自动化提交代码动作。__
+__It is used for submitting the code automatically.__
 
 #### options.repository / repository
+
 Type: `String`
 
-项目 svn 根路径。
+Project svn root path.
 
 #### options.cwd / cwd
+
 Type: `String`
 
-项目本地根路径。
+Project local root path. 
 
 #### svn
+
 Type: `String`
 
-相对于 svn 根路径的相对路径。
+It is a relative path to svn root path. 
 
 #### src
+
 Type: `String`
 
-相对于本地根路径的相对路径。
+It is a relative path to local root path. 
 
 #### question
+
 Type: `String`
 
-需要人工填写日志时，自定义提示问题。
+Question prompts are user-defined for keeping the log manually. 
 
 #### log
+
 Type: `String` | `Function`
 
-要提交的日志。
+Log to be submitted. 
 
-可设置为一个函数，其返回值作为提交问件时填充的日志。
+It can be set as a function, the returned value can be the log when questions are submitted.
 
-如果用中括号包裹，可以提供一个相对于 svn 根路径的相对路径。
+If it is packaged with a bracket, provide a relative path to svn root path. 
 
-如果地址不是绝对路径，则自动根据 repository 属性计算 svn 路径。
+If the address is not an absolute path, calculate svn path automatically according to the attribute of repository.
 
-该目标 svn 路径的日志将会被复制作为提交日志。
+The log of this target svn path will be copied and used as the log to be submitted. 
 
-仅复制大于提交 svn 目标路径当前版本号的日志。
+Copy only the log larger than the current version number of svn target path to be submitted. 
 
-如果希望人工填入日志，log 属性中需要存在 {ask} 字段，{ask} 将会被替换为人工填写的信息。
+In case of keeping the log manually, {ask} field should exist in the attribute, which will be replaced by information filled manually. 
 
 #### svnCommit usage examples
+
 ```js
 var path = require('path');
 
@@ -402,50 +420,56 @@ grunt svnConfig svnCommit
 
 ## svnCopy multitask
 
-__复制一个 svn 目录，通常用于自动生成 tag 流程和自动生成 branch 流程。__
+__Copy a svn directory, and use it for automatic generation of tag process and branch process generally.__
 
 #### options.repository / repository
+
 Type: `String`
 
-项目 svn 根路径。
+Project svn root path. 
 
 #### from
+
 Type: `String`
 
-要拷贝的目录，填写相对于项目 svn 根路径的相对路径。
+To copy the directory, fill in relative path to project svn root path. 
 
 #### to
+
 Type: `String`
 
-拷贝目录到目标 svn 目录，填写相对于项目 svn 根路径的相对路径。
+To copy the directory to the target svn directory, fill in the relative path to project svn root path. 
 
 #### question
+
 Type: `String`
 
-如果要求从控制台获取拷贝目录的重命名，可以通过 question 属性自定义控制台提示的问题。
+In case of obtain the rename of the directory to the copied from the console, user-define questions of the console through attributes.  
 
 #### rename
+
 Type: `String` | `Function`
 
-拷贝目录的重命名名称。
+Copy the renamed name of the directory. 
 
-如果不提供 rename 属性，则用被拷贝目录的 svn 版本号(revision)作为重命名名称。
+In case of rename attribute, use the svn version number (revision) of the directory to be copied as the renamed name. 
 
-可以通过一个函数自定义重命名名称，这个函数会接受一个 json 对象作为参数。
+User-define the renamed name with a function which will use a json object as the parameter. 
 
-- info : 函数参数。
-- info.name : 要拷贝的目录的名称。
-- info.revision : 要拷贝的目录的当前版本号。
-- info.lastLog : 存放拷贝目录的目标目录的最新日志。
-- info.ask : 从控制台获取的用户输入。
+- info : argument of function。
+- info.name : name of the directory to be copied. 
+- info.revision : current version number of the directory to be copied. 
+- info.lastLog : the latest log of the target directory for storing copied directories.
+- info.ask : user input obtained from the console. 
 
-可以设置 rename 为一个模板字符串，自动替换花括号里面的内容为 info 对象中对应的属性值。
+Set rename as a template character string, and replace contents in the brace by corresponding attribute value in info object automatically. 
 
-例如设置 rename 为 '{name}_{revision}' 。如果被拷贝目录名称为 trunk, 最新版本号为 13542, 则拷贝目录被重命名为: trunk_13542 。
+E.g. set rename as '{name}_{revision}'. If the name of the copied directory is trunk, and the latest version number is 13542, the copied directory is renamed as: trunk_13542. 
 
-如果 rename 属性中存在 '{ask}' 字段，会在控制台给出提示，要求用户输入文案来替换这个字段。
+If '{ask}' field in the attribute of rename, the console will give prompts and request the user to replace this field by files. 
 
 #### svnCopy usage examples
+
 ```js
 var path = require('path');
 
@@ -498,14 +522,16 @@ grunt svnConfig svnCopy
 
 ## confirm multitask
 
-__在任务执行中创建一个问答，来决定任务流程是否继续下去__
+__Create a question and answer during task execution to determine whether to continue task flows.__
 
 #### msg
+
 Type: `String`
 
-提示信息
+Prompt message
 
 #### confirm usage examples
+
 ```js
 grunt.initConfig({
     confirm : {
@@ -518,7 +544,7 @@ grunt.initConfig({
 
 ## example
 
-完整的 gruntfile 配置示例:
+A demo of gruntfile config.
 
 ```js
 var $path = require('path');
