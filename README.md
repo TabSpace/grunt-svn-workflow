@@ -368,18 +368,18 @@ grunt.initConfig({
             repository: '<%=svnConfig.project%>',
             cwd: '<%=projectDir%>'
         },
-        // 如果不提供 log 属性，日志将会是："Auto commit by task svnCommit:auto"
+        // The default log is ："Auto commit by task svnCommit:auto"
         auto : {
             svn : 'online/trunk',
             src : 'trunk'
         },
-        // 可以用一个字符串自定义 log，可以使用 grunt 模板
+        // The log should be a string , could use grunt template.
         custom : {
             log : 'custom log.'
             svn : 'online/trunk',
             src : 'trunk'
         },
-        // 可以用一个函数返回需要填充的日志
+        // Use a function return the log string.
         useFunction : {
             log : function(){
                 return 'custom log ' + Date.now();
@@ -387,24 +387,24 @@ grunt.initConfig({
             svn : 'online/trunk',
             src : 'trunk'
         },
-        // 可以在控制台显示提示，要求用户输入需要填写的日志
+        // Give a prompt in console. Let the user fill the log.
         ask : {
-            log : '自定义日志：{ask}'
+            log : 'Custom log: {ask}'
             svn : 'online/trunk',
             src : 'tools/temp/online'
         },
-        // 可以自定义控制台提示的问题
+        // Custom the prompt in console.
         askCustom : {
             question : 'Input the log:',
-            log : '自定义日志：{ask}'
+            log : 'Custom your logs: {ask}'
             svn : 'online/trunk',
             src : 'tools/temp/online'
         },
-        // 假设 svn 根路径为 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/"。
-        // 假设本地项目根路径为 "~/work/svn-workflow/example"
-        // 执行下面的任务，将会在这个目录提交代码: "~/work/svn-workflow/example/tools/temp/online" 。
-        // 代码被提交到 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/trunk" 。
-        // 提交日志从这个 svn 路径获取："https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/dev/trunk"
+        // If svn root path is "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/"。
+        // If local project root path is "~/work/svn-workflow/example"
+        // Execute the follow task, will commit in directory: "~/work/svn-workflow/example/tools/temp/online" 。
+        // Commit to : "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/trunk" 。
+        // The log will be getted from the svn path: "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/dev/trunk"
         copyLogFrom : {
             log : '[dev/trunk]',
             svn : 'online/trunk',
@@ -485,24 +485,24 @@ grunt.initConfig({
         options : {
             repository: '<%=svnConfig.project%>'
         },
-        // 用 online/trunk 的版本号作为重命名，复制 online/trunk 目录到 online/tags 下
-        // 假设项目 svn 根路径为 "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/"。
-        // 执行下面任务，将会复制目录："https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/trunk"
-        // 如果源目录最新版本号为 13542, 则复制完成后，被复制的 svn 目录最终路径为：
+        // Rename by revision of "online/trunk", copy "online/trunk" to "online/tags/{revision}".
+        // If project svn root path is "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/"。
+        // Execute the followed task, will copy the directory : "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/trunk"
+        // If the revision of original directory is 13542, The directory will be copied to svn svnpath:
         // "https://svn.sinaapp.com/gruntsvnworkflow/1/svn-workflow/example/online/tags/13542"
         autoTag : {
             from : 'online/trunk',
             to : 'online/tags'
         },
-        // 可以在控制台显示提示，要求用户输入被复制目录的重命名名称。
+        // Ask for the name in console.
         branch : {
             question : 'Input the branch name:'.
             rename : 'branch_{ask}',
             from : 'dev/trunk',
             to : 'dev/branches'
         },
-        // 可以通过一个函数自定义重命名名称。
-        // info 参数提供了常用的参与计算的属性。
+        // Give a name by a function.
+        // The argument info give the informations for computing.
         tagByCompute : {
             rename : function(info){
                 var tagName = '';
