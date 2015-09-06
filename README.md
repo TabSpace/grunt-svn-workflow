@@ -714,6 +714,7 @@ module.exports = function(grunt) {
 
 ## Release History
 
+ * 2015-08-27 v0.2.5 Provide English document.
  * 2015-08-27 v0.2.4 The "rename" option in svnCopy task could get return value as answer template.
  * 2015-08-26 v0.2.3 The option "to" of task svnConfig could be a function.
  * 2015-08-25 v0.2.2 Fix git url.
