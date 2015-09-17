@@ -214,16 +214,46 @@ module.exports = function(grunt){
 
 				var targetPath = $tools.join(pathTo, rename);
 
-				// Copy svn folder
 				commands.push({
 					cmd : 'svn',
-					args : ['copy', pathFrom, targetPath, '-m', strLog],
-					opts : {
-						stdio : 'inherit'
-					}
+					args : ['info', targetPath],
+					autoExecError : false
 				});
 
-				grunt.verbose.or.writeln('svn', 'copy', pathFrom, targetPath, '-m', '\n' + strLog);
+				// If targetPath exists, throw an Error
+				commands.push(function(error, result, code){
+					var json = {};
+					try{
+						json = result.stdout.split(/\n/g).reduce(function(obj, str){
+							var index = str.indexOf(':');
+							var key = str.substr(0, index).trim().toLowerCase();
+							var value = str.substr(index + 1).trim();
+							obj[key] = value;
+							return obj;
+						}, {});
+					}catch(e){}
+
+					var cmd = {};
+
+					if(json.url){
+						grunt.fatal(['The targetPath', targetPath, 'allready exists.'].join(' '));
+						cmd = {
+							cmd : 'echo',
+							args : ['The targetPath allready exists.']
+						};
+					}else{
+						cmd = {
+							cmd : 'svn',
+							args : ['copy', pathFrom, targetPath, '-m', strLog],
+							opts : {
+								stdio : 'inherit'
+							}
+						};
+						grunt.verbose.or.writeln('svn', 'copy', pathFrom, targetPath, '-m', '\n' + strLog);
+					}
+
+					return cmd;
+				});
 
 				$cmdSeries(grunt, commands, {
 					complete : function(error, result, code){
