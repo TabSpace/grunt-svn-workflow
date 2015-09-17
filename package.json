@@ -1,6 +1,6 @@
 {
   "name": "grunt-svn-workflow",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Manage svn folders.",
   "author": "Tony Liang",
   "homepage": "https://github.com/tony-302/grunt-svn-workflow",
