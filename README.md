@@ -715,6 +715,7 @@ module.exports = function(grunt) {
 
 ## Release History
 
+ * 2015-09-17 v0.2.7 Support windows cmd.
  * 2015-09-17 v0.2.6 If the copy target url is existence, will throw a fatal error.
  * 2015-08-27 v0.2.5 Provide English document.
  * 2015-08-27 v0.2.4 The "rename" option in svnCopy task could get return value as answer template.
