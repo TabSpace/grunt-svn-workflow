@@ -84,10 +84,7 @@ module.exports = function(grunt){
 					var cmd = {};
 
 					if(json.url){
-						cmd = {
-							cmd : 'echo',
-							args : ['Check svn path exists.']
-						};
+						grunt.log.writeln('Check svn path exists.');
 					}else{
 						grunt.verbose.writeln('The svn path', pathTo, 'not exist. ');
 						grunt.verbose.writeln('Auto create svn path', pathTo, '.');
@@ -237,10 +234,7 @@ module.exports = function(grunt){
 
 					if(json.url){
 						grunt.fatal(['The targetPath', targetPath, 'allready exists.'].join(' '));
-						cmd = {
-							cmd : 'echo',
-							args : ['The targetPath allready exists.']
-						};
+						grunt.log.writeln('The targetPath allready exists.');
 					}else{
 						cmd = {
 							cmd : 'svn',

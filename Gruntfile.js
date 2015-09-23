@@ -188,7 +188,7 @@ module.exports = function(grunt) {
 
 	//unit test for svnConfig
 	grunt.registerTask(
-		'svn-test-svnConfig-prepare', 
+		'svn-test-svnConfig-prepare',
 		'svn-test-svnConfig-prepare',
 		function(){
 			var done = this.async();
@@ -213,6 +213,7 @@ module.exports = function(grunt) {
 	);
 
 	grunt.registerTask('svn-test-svnConfig', [
+		'svn-test-svnConfig-prepare',
 		'svnConfig',
 		'nodeunit:svnConfig'
 	]);
@@ -241,7 +242,7 @@ module.exports = function(grunt) {
 		function(){
 			var done = this.async();
 			var path = 'test/svninit';
-			var svnPath = grunt.config.get('svnConfig.project') + 'test/svninit';
+			var svnPath = $tools.join(grunt.config.get('svnConfig.project'), 'test/svninit');
 			grunt.verbose.writeln('svn delete ' + svnPath + ' -m "delete ' + path + '"');
 			grunt.util.spawn({
 				cmd: 'svn',

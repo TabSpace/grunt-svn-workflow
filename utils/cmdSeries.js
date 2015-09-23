@@ -74,12 +74,15 @@ var cmdSeries = function(grunt, cmds, options){
 			}
 
 			spOptions = $tools.extend({
+				cmd : '',
+				args : [],
 				autoExecError : true
 			}, spOptions);
 
 			if(!spOptions.cmd){
 				grunt.verbose.writeln('cmd is empty.');
 				callback(null, {});
+				return;
 			}
 
 			var strcmd = spOptions.cmd;

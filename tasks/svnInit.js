@@ -72,10 +72,7 @@ module.exports = function(grunt){
 				var cmd = {};
 
 				if(json.url){
-					cmd = {
-						cmd : 'echo',
-						args : ['Create files for ' + json.url]
-					};
+					grunt.log.writeln('Create files for ' + json.url);
 				}else{
 					grunt.verbose.writeln('Auto create svn path', svnPath);
 					cmd.cmd = 'svn';

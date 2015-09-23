@@ -63,11 +63,22 @@ var join = function(){
 		args.unshift(first);
 	}
 	var next = $path.join.apply(null, args);
+	var output = '';
 	if(protocol){
-		return protocol + '//' + next;
+		output = protocol + '//' + next;
 	}else{
-		return next;
+		output = next;
 	}
+	
+	if(protocol){
+		if(protocol.indexOf('http') >= 0){
+			output = output.replace(/\\/g, '/');
+		}else{
+			output = $path.resolve(output);
+		}
+	}
+
+	return output;
 };
 
 module.exports = {
