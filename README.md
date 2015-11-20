@@ -1,10 +1,10 @@
 #grunt-svn-workflow
 
-[![Build Status: Linux](https://travis-ci.org/tony-302/grunt-svn-workflow.svg?branch=master)](https://travis-ci.org/tony-302/grunt-svn-workflow)
-[![dependencies](https://david-dm.org/tony-302/grunt-svn-workflow.png)](http://david-dm.org/tony-302/grunt-svn-workflow)
+[![Build Status: Linux](https://travis-ci.org/tabspace/grunt-svn-workflow.svg?branch=master)](https://travis-ci.org/tabspace/grunt-svn-workflow)
+[![dependencies](https://david-dm.org/tabspace/grunt-svn-workflow.png)](http://david-dm.org/tabspace/grunt-svn-workflow)
 [![NPM version](http://img.shields.io/npm/v/grunt-svn-workflow.svg)](https://www.npmjs.org/package/grunt-svn-workflow)
 
-[中文](https://github.com/tony-302/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
+[中文](https://github.com/tabspace/grunt-svn-workflow/blob/master/docs/README_zh-cn.md)
 
 > An SVN operation automation solution
 

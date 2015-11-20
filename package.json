@@ -3,10 +3,10 @@
   "version": "0.2.8",
   "description": "Manage svn folders.",
   "author": "Tony Liang",
-  "homepage": "https://github.com/tony-302/grunt-svn-workflow",
+  "homepage": "https://github.com/tabspace/grunt-svn-workflow",
   "repository": {
     "type": "git",
-    "url": "git@github.com:tony-302/grunt-svn-workflow.git"
+    "url": "git@github.com:tabspace/grunt-svn-workflow.git"
   },
   "dependencies": {
     "ask-for": "0.0.2"
@@ -36,7 +36,7 @@
     "LICENSE"
   ],
   "bugs": {
-    "url": "https://github.com/tony-302/grunt-svn-workflow/issues"
+    "url": "https://github.com/tabspace/grunt-svn-workflow/issues"
   },
   "license": "MIT"
 }
