@@ -715,6 +715,7 @@ module.exports = function(grunt) {
 
 ## Release History
 
+ * 2015-11-20 v0.2.9 Update github id.
  * 2015-09-17 v0.2.8 Support windows cmd.
  * 2015-09-17 v0.2.6 If the copy target url is existence, will throw a fatal error.
  * 2015-08-27 v0.2.5 Provide English document.
